@@ -2,6 +2,8 @@
 import json, sys, os, typing, copy
 
 # Import local dependencies.
+from point import Point
+from board import Board
 from constants import *
 import utils
 
@@ -26,11 +28,16 @@ def get_scores(board):
 
 
 
-def is_move_legal(stone, point, boards):
+def is_move_legal(stone, move):
     """
     input: stone, point, boards
     output: True or False
     """
+    if move == PASS:
+        return True
+    str_point, json_boards = move
+    point = Point.from_str(str_point)
+    boards = [Board(json_board) for json_board in json_boards]
     if len(boards) == 1:
         return _check_legality_for_boards_of_length_one(stone, point, boards)
     elif len(boards) == 2:
