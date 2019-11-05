@@ -61,7 +61,7 @@ def _check_legality_for_boards_of_length_two(stone, point, boards):
     if maybe_turn == None:
         return False
     # check new board validity
-    maybe_board = _get_board_if_valid_move(boards[0], stone, point)
+    maybe_board = _get_board_if_valid_play(boards[0], stone, point)
     if maybe_board == None:
         return False
     if not _is_valid_turns([maybe_turn,stone]):
@@ -101,7 +101,7 @@ def _check_legality_for_boards_of_length_three(stone, point, boards):
         return False
 
     # check new board validity
-    maybe_board = _get_board_if_valid_move(boards[0], stone, point)
+    maybe_board = _get_board_if_valid_play(boards[0], stone, point)
     if maybe_board == None:
         return False
 

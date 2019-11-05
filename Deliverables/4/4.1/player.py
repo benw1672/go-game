@@ -3,7 +3,7 @@ import json, os, sys, typing
 
 # Import local dependencies.
 from constants import *
-from rule_checker import RuleChecker
+import rule_checker as rc
 import go_utils
 
 
@@ -27,7 +27,6 @@ class Player():
 
 
     def make_a_move(self, boards: list):
-        rc = RuleChecker()
         try:
             for board in boards:
                 rc.validate_board(board)

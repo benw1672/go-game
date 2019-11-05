@@ -2,7 +2,7 @@
 import json, os, sys, typing
 
 # Import local dependencies.
-import constants, player, strategies
+import constants
 from board import Board
 import rule_checker as rc
 
