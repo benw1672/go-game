@@ -22,20 +22,20 @@ def main():
         # If the move is a pass
         if i == 0:
             results.append(rf.register_black_player(json_element))
-            print(rf.register_black_player(json_element))
+            # print(rf.register_black_player(json_element))
             continue
         elif i == 1:
             results.append(rf.register_white_player(json_element))
-            print(rf.register_white_player(json_element))
+            # print(rf.register_white_player(json_element))
             continue
         elif i == 2:
             res = copy.deepcopy(rf.board_history)
             results.append(res)
-            print("[")
-            for b in res:
-               print(b)
-            print("]")
-            print()
+            # print("[")
+            # for b in res:
+            #    print(b)
+            # print("]")
+            # print()
         if rf.is_game_ended:
             break
         else:
@@ -46,14 +46,14 @@ def main():
             res = copy.deepcopy(rf.play_point(play_or_pass))
             if isinstance(res[0], Board):
                 results.append(res)
-                print("[")
-                for b in res:
-                   print(b)
-                print("]")
-                print()
+                # print("[")
+                # for b in res:
+                #    print(b)
+                # print("]")
+                # print()
             else:
                 results.append(res)
-                print(res)
+                # print(res)
     if rf.is_game_ended == False:
         results.pop()
 
