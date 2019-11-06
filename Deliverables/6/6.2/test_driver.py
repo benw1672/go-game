@@ -16,13 +16,25 @@ def main():
 
     rf = Referee()
     results = []
+    res_print = []
     for i, json_element in enumerate(json_elements):
         # If the move is a pass
-        if i < 2:
-            results.append(rf.register_player(json_element))
+        if i == 0:
+            results.append(rf.register_black_player(json_element))
+            #print(rf.register_black_player(json_element))
+            continue
+        elif i == 1:
+            results.append(rf.register_white_player(json_element))
+            #print(rf.register_white_player(json_element))
             continue
         elif i == 2:
-            results.append(rf.board_history[0].to_json())
+            res = rf.board_history
+            results.append(list(map(lambda board: board.to_json(), res)))
+            #map(lambda board: board.pretty_print(), res)
+            #print("[")
+            #for b in res:
+            #    b.pretty_print()
+            #print("]")
         if rf.is_game_ended:
             break
         else:
@@ -31,13 +43,18 @@ def main():
             else:
                 play_or_pass = Point.from_str(json_element)
             res = rf.play_point(play_or_pass)
-            if isinstance(res, Board):
-                results.append(res.to_json())
+            if isinstance(res[0], Board):
+                results.append(list(map(lambda board: board.to_json(), res)))
+                #print("[")
+                #for b in res:
+                #    b.pretty_print()
+                #print("]")
+                #map(lambda board: board.pretty_print(), res)
             else:
                 results.append(res)
+                #print(res)
 
     json.dump(results, sys.stdout)
-
 
 def txt2json(content: str) -> list:
     decoder = json.JSONDecoder()

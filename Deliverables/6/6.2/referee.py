@@ -18,13 +18,24 @@ class Referee():
         self.board_history = [Board()]
         self.prev_move = ""
 
+    def register_black_player(self, player_name):
+        self.black_player.set_name(player_name)
+        self.black_player.receive_stones(BLACK)
+        self.is_black_registered = True
+        return BLACK
+    def register_white_player(self, player_name):
+        self.white_player.name = player_name
+        self.white_player.set_name(player_name)
+        self.white_player.receive_stones(WHITE)
+        self.is_white_registered = True
+        return WHITE
     def register_player(self, player_name):
         if not self.is_black_registered:
             self.black_player.set_name(player_name)
             self.black_player.receive_stones(BLACK)
             self.is_black_registered = True
             return BLACK
-        if not self.is_white_registered:
+        elif not self.is_white_registered:
             self.white_player.name = player_name
             self.white_player.set_name(player_name)
             self.white_player.receive_stones(WHITE)
@@ -78,7 +89,8 @@ class Referee():
                 self.update_board_history(self.board_history[0])
                 self.update_turn()
                 self.update_prev_move(point_or_pass)
-                return self.board_history[1]
+                #return self.board_history[1]
+                return self.board_history
 
         point = point_or_pass
         if rc.is_move_legal(self.current_turn,
@@ -88,7 +100,8 @@ class Referee():
             self.update_board_history(new_board)
             self.update_turn()
             self.update_prev_move(point_or_pass)
-            return curr_board
+            #return curr_board
+            return self.board_history
         else:
             #ILLEGAL_END
             self.is_game_ended = True

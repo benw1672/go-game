@@ -134,3 +134,9 @@ class Board(object):
                 chains.append(chain)
 
         return chains
+
+
+    def pretty_print(self):
+        for row in self._grid:
+            print(row)
+        print()
