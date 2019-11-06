@@ -35,9 +35,7 @@ def is_move_legal(stone, move):
     """
     if move == PASS:
         return True
-    str_point, json_boards = move
-    point = Point.from_str(str_point)
-    boards = [Board(json_board) for json_board in json_boards]
+    point, boards = move
     if len(boards) == 1:
         return _check_legality_for_boards_of_length_one(stone, point, boards)
     elif len(boards) == 2:

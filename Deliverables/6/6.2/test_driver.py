@@ -2,8 +2,9 @@
 import json, os, sys, typing
 
 # Import local dependencies.
-import constants, player, strategies
+import player, strategies
 from board import Board
+from constants import *
 
 
 def main():
@@ -12,8 +13,7 @@ def main():
     json_elements = txt2json(txt)
 
     # Instantiate dependencies.
-    prioritize_capture_strategy = strategies.PrioritizeCaptureStrategy(constants.AI_MAX_SEARCH_DEPTH)
-    player1 = player.Player(prioritize_capture_strategy)
+    player1 = player.Player(strategy=strategies.SimpleStrategy())
 
     # Handle each input and collect the results.
     results = []
@@ -26,8 +26,13 @@ def main():
             player1.receive_stones(stone)
         elif json_element[0] == "make-a-move":
             json_boards = json_element[1]
-            boards = [Board.from_json(json_board) for json_board in json_boards]
-            results.append(player1.make_a_move(boards))
+            boards = [Board(json_board) for json_board in json_boards]
+            move = player1.make_a_move(boards)
+            if move == PASS:
+                move_str = PASS
+            else:
+                move_str = str(move[0])
+            results.append(move_str)
         else:
             raise ValueError("The given input is not valid.")
     

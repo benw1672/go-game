@@ -34,6 +34,8 @@ class Board(object):
 
     def __eq__(self, other):
         # Allows comparison by value of two boards using the `==` operator: `board1 == board2`
+        if other == None:
+            return False
         for i in range(len(self._grid)):
             for j in range(len(self._grid[0])):
                 if self._grid[i][j] != other._grid[i][j]:
@@ -107,7 +109,7 @@ class Board(object):
         liberties, connected_points, visited = set(), set(), set([starting_point])
         q = Queue()
         q.put(starting_point)
-        while q:
+        while not q.empty():
             curr_point = q.get()
             curr_stone = self[curr_point]
             if curr_stone == starting_stone:

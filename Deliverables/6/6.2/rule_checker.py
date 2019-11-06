@@ -2,6 +2,8 @@
 import json, sys, os, typing, copy
 
 # Import local dependencies.
+from point import Point
+from board import Board
 from constants import *
 import utils
 
@@ -26,11 +28,14 @@ def get_scores(board):
 
 
 
-def is_move_legal(stone, point, boards):
-    """
+def is_move_legal(stone, move):
+    '''
     input: stone, point, boards
     output: True or False
-    """
+    '''
+    if move == PASS:
+        return True
+    point, boards = move
     if len(boards) == 1:
         return _check_legality_for_boards_of_length_one(stone, point, boards)
     elif len(boards) == 2:
@@ -54,7 +59,7 @@ def _check_legality_for_boards_of_length_two(stone, point, boards):
     if maybe_turn == None:
         return False
     # check new board validity
-    maybe_board = _get_board_if_valid_move(boards[0], stone, point)
+    maybe_board = _get_board_if_valid_play(boards[0], stone, point)
     if maybe_board == None:
         return False
     if not _is_valid_turns([maybe_turn,stone]):
@@ -94,7 +99,7 @@ def _check_legality_for_boards_of_length_three(stone, point, boards):
         return False
 
     # check new board validity
-    maybe_board = _get_board_if_valid_move(boards[0], stone, point)
+    maybe_board = _get_board_if_valid_play(boards[0], stone, point)
     if maybe_board == None:
         return False
 
@@ -132,11 +137,11 @@ def _get_turn_if_legal_progression(new_board, old_board):
 
 
 def _get_board_if_valid_play(board, player_stone, point):
-    """
+    '''
     input: board, stone that has the turn,
             dictionary of keys "stone" and "point" and values their values
     output: maybe board (i.e. board or None)
-    """
+    '''
     new_board = copy.deepcopy(board)
     # Step 1: Place a stone.
     if board.is_occupied(point):
@@ -155,10 +160,10 @@ def _get_board_if_valid_play(board, player_stone, point):
 
 
 def _is_valid_turns(sequence_of_turns):
-    """
+    '''
     sequence of turns is a list of stones that played,
         in the order from the oldest to the latest
-    """
+    '''
     return sequence_of_turns in \
         [[BLACK, WHITE, BLACK],
         [WHITE, BLACK, WHITE],
