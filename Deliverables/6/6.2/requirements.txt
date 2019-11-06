@@ -8,5 +8,6 @@ PyContracts==1.7.16
 pylint==2.1.1
 pyparsing==2.4.2
 six==1.11.0
-jsonpickle==1.2.0
+simplejson==3.16.0
+jsonpickle==1.0.0
 wrapt==1.10.11

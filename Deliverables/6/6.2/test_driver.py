@@ -1,5 +1,6 @@
 # Import nonlocal dependencies.
-import json, jsonpickle, os, sys, typing
+import json, os, sys, typing
+import jsonpickle
 
 # Import local dependencies.
 import player, strategies, referee
