@@ -8,7 +8,7 @@ import utils
 
 
 class Player():
-    def __init__(self, strategy, name="no name", stone=None):
+    def __init__(self, strategy=None, name="no name", stone=None):
         self.strategy = strategy
         self.name = name
         self.stone = stone
@@ -18,6 +18,9 @@ class Player():
     def __repr__(self):
         return 'Player name: "{}"; Player color: {}'.format(self.name, self.stone)
 
+
+    def set_name(self, name):
+        self.name = name
 
     def receive_stones(self, stone: str):
         if stone not in STONES:

@@ -2,9 +2,11 @@
 import json, os, sys, typing
 
 # Import local dependencies.
-import player, strategies
+import player, strategies, referee
+from point import Point
 from board import Board
 from constants import *
+from referee import Referee
 
 
 def main():
@@ -12,32 +14,29 @@ def main():
     txt = sys.stdin.read().rstrip()
     json_elements = txt2json(txt)
 
-    # Instantiate dependencies.
-    player1 = player.Player(strategy=strategies.SimpleStrategy())
-
-    # Handle each input and collect the results.
+    rf = Referee()
     results = []
-    for json_element in json_elements:
-        if json_element[0] == "register":
-            player1.name = "no name"
-            results.append(player1.name)
-        elif json_element[0] == "receive-stones":
-            stone = json_element[1]
-            player1.receive_stones(stone)
-        elif json_element[0] == "make-a-move":
-            json_boards = json_element[1]
-            boards = [Board(json_board) for json_board in json_boards]
-            move = player1.make_a_move(boards)
-            if move == PASS:
-                move_str = PASS
-            else:
-                move_str = str(move[0])
-            results.append(move_str)
+    for i, json_element in enumerate(json_elements):
+        # If the move is a pass
+        if i < 2:
+            results.append(rf.register_player(json_element))
+            continue
+        elif i == 2:
+            results.append(rf.board_history[0].to_json())
+        if rf.is_game_ended:
+            break
         else:
-            raise ValueError("The given input is not valid.")
-    
+            if json_element == PASS:
+                play_or_pass = PASS
+            else:
+                play_or_pass = Point.from_str(json_element)
+            res = rf.play_point(play_or_pass)
+            if isinstance(res, Board):
+                results.append(res.to_json())
+            else:
+                results.append(res)
+
     json.dump(results, sys.stdout)
-    print()
 
 
 def txt2json(content: str) -> list:

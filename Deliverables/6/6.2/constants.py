@@ -18,3 +18,7 @@ TURN_TYPES = [PASS] + STONES
 
 # Player AI.
 AI_MAX_SEARCH_DEPTH = 1
+
+# Types of end
+PROPER_END = True
+ILLEGAL_END = False
