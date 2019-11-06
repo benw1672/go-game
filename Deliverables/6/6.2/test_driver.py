@@ -53,6 +53,8 @@ def main():
             else:
                 results.append(res)
                 #print(res)
+    if rf.is_game_ended == False:
+        results.pop()
 
     json.dump(results, sys.stdout)
 
