@@ -14,7 +14,21 @@ class Board(object):
         self._grid = grid
 
 
-# Special methods
+# Pretty print the board for visualization and debugging purposes.
+    def __str__(self):
+        return "[" + ",\n ".join(map(str, self._grid)) + "]"
+
+
+# For board serialization and deserialization using jsonpickle library.
+    def __getstate__(self):
+        return self._grid
+
+
+    def __setstate__(self, grid):
+        self._grid = grid
+
+
+# Special methods for easy board traversal, element access, and comparison.
     def __iter__(self):
         for j in range(BOARD_COL_LENGTH):
             for i in range(BOARD_ROW_LENGTH):
@@ -134,9 +148,3 @@ class Board(object):
                 chains.append(chain)
 
         return chains
-
-
-    def pretty_print(self):
-        for row in self._grid:
-            print(row)
-        print()

@@ -1,5 +1,5 @@
 # Import nonlocal dependencies.
-import json, os, sys, typing
+import json, jsonpickle, os, sys, typing
 
 # Import local dependencies.
 import player, strategies, referee
@@ -29,7 +29,7 @@ def main():
             continue
         elif i == 2:
             res = rf.board_history
-            results.append(list(map(lambda board: board.to_json(), res)))
+            results.append(res)
             #map(lambda board: board.pretty_print(), res)
             #print("[")
             #for b in res:
@@ -44,7 +44,7 @@ def main():
                 play_or_pass = Point.from_str(json_element)
             res = rf.play_point(play_or_pass)
             if isinstance(res[0], Board):
-                results.append(list(map(lambda board: board.to_json(), res)))
+                results.append(res)
                 #print("[")
                 #for b in res:
                 #    b.pretty_print()
@@ -56,7 +56,8 @@ def main():
     if rf.is_game_ended == False:
         results.pop()
 
-    json.dump(results, sys.stdout)
+    print(jsonpickle.encode(results, unpicklable=False))
+
 
 def txt2json(content: str) -> list:
     decoder = json.JSONDecoder()
