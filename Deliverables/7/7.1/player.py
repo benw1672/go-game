@@ -24,11 +24,11 @@ def isValidBoard(board):
 
 def handle_player(player, json_expr):
     command, *args = json_expr
-    if command == "register":
+    if command == "register" and len(args) == 0:
         return player.register()
-    elif command == "receive-stones":
+    elif command == "receive-stones" and len(args) == 1:
         return player.receive_stones(*args)
-    elif command == "make-a-move":
+    elif command == "make-a-move" and len(args) == 1:
         boards = [Board(json_board) for json_board in args[0]]
         move = player.make_a_move(boards)
         if isinstance(move, str):
@@ -79,14 +79,14 @@ class PlayerContractProxy():
         if isValidStone(stone):
             return self.real_player.receive_stones(stone)
         else:
-            print("not a valid stone: " + stone)
+            #print("not a valid stone: " + stone)
             return GO_HAS_GONE_CRAZY
 
     def make_a_move(self, boards):
-        if all(isValidBoard(board) for board in boards):
+        if len(boards) <= 3 and all(isValidBoard(board) for board in boards):
             return self.real_player.make_a_move(boards)
         else:
-            print("not a valid boards")
+            #print("not valid boards")
             return GO_HAS_GONE_CRAZY
 
 

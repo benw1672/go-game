@@ -75,6 +75,9 @@ def _check_history_for_boards_of_length_three(stone, boards):
         if _get_captured_chains(board):
             return False
 
+    if boards[0] == boards[2]:
+        return False
+
     return True
 
 
@@ -86,79 +89,48 @@ def is_move_legal(stone, move):
     if move == PASS:
         return True
     point, boards = move
-    if len(boards) == 1:
-        return _check_legality_for_boards_of_length_one(stone, point, boards)
-    elif len(boards) == 2:
-        return _check_legality_for_boards_of_length_two(stone, point, boards)
-    else:
-        return _check_legality_for_boards_of_length_three(stone, point, boards)
+    return is_history_legal(stone, boards) and is_new_move_legal(stone, move)
 
 
+def is_new_move_legal(stone, new_move):
+    point, boards = new_move
+    maybe_board = _get_board_if_valid_play(boards[0], stone, point)
+    if maybe_board == None:
+        return False
+
+    #check Ko rule
+    if len(boards) == 3 and maybe_board == boards[1]:
+        return False
+    return True
+
+    """
 def _check_legality_for_boards_of_length_one(stone, point, boards):
     return stone == BLACK and boards[0].is_fully_empty()
 
 
 def _check_legality_for_boards_of_length_two(stone, point, boards):
-    # Check that first board is legal.
-    if stone != WHITE:
-        return False
-    if not boards[1].is_fully_empty():
-        return False
-    # Check that the progression from first to second board is legal.
-    maybe_turn = _get_turn_if_legal_progression(boards[0], boards[1])
-    if maybe_turn == None:
+    if not is_history_legal(stone, boards):
         return False
     # check new board validity
     maybe_board = _get_board_if_valid_play(boards[0], stone, point)
     if maybe_board == None:
-        return False
-    if not _is_valid_turns([maybe_turn,stone]):
         return False
     return True
 
 
 def _check_legality_for_boards_of_length_three(stone, point, boards):
-    # check history validity
-    maybe_turn_1_2 = _get_turn_if_legal_progression(boards[1], boards[2])
-    if maybe_turn_1_2 == None:
+    if not is_history_legal(stone, boards):
         return False
-    maybe_turn_0_1 = _get_turn_if_legal_progression(boards[0], boards[1])
-    if maybe_turn_0_1 == None:
-        return False
-
-    # edge case where the last board is empty
-    if boards[2].is_fully_empty():
-        # cannot pass two times in a row
-        if maybe_turn_1_2 == PASS and maybe_turn_0_1 == PASS:
-            return False
-        if [maybe_turn_1_2, maybe_turn_0_1, stone] not in \
-            [[BLACK, WHITE, BLACK],
-            [BLACK, PASS, BLACK],
-            [WHITE, BLACK, WHITE],
-            [WHITE, PASS, WHITE],
-            [PASS, WHITE, BLACK],
-            ]:
-            return False
-
-    # checking if the board has captured stones
-    for board in boards:
-        if _get_captured_chains(board):
-            return False
-
-    if not _is_valid_turns([maybe_turn_1_2, maybe_turn_0_1, stone]):
-        return False
-
     # check new board validity
     maybe_board = _get_board_if_valid_play(boards[0], stone, point)
     if maybe_board == None:
         return False
 
-    #Check if Ko rule is violated, at this point no consecutive two passes have been made
-    if boards[0] == boards[2]:
-        return False
+    #Check if Ko rule is violated
     if maybe_board == boards[1]:
         return False
     return True
+    """
 
 
 def _get_points_with_added_stones(new_board, old_board):
