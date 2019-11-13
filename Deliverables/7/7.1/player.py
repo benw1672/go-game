@@ -70,6 +70,8 @@ class RemoteProxyPlayer():
             raise RuntimeError("Connection to client is broken.")
         if json_response == PASS:
             return PASS
+        if json_response == INVALID_HISTORY:
+            return INVALID_HISTORY
         else:
             return Point.from_str(json_response)
 
