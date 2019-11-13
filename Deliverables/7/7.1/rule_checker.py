@@ -103,36 +103,6 @@ def is_new_move_legal(stone, new_move):
         return False
     return True
 
-    """
-def _check_legality_for_boards_of_length_one(stone, point, boards):
-    return stone == BLACK and boards[0].is_fully_empty()
-
-
-def _check_legality_for_boards_of_length_two(stone, point, boards):
-    if not is_history_legal(stone, boards):
-        return False
-    # check new board validity
-    maybe_board = _get_board_if_valid_play(boards[0], stone, point)
-    if maybe_board == None:
-        return False
-    return True
-
-
-def _check_legality_for_boards_of_length_three(stone, point, boards):
-    if not is_history_legal(stone, boards):
-        return False
-    # check new board validity
-    maybe_board = _get_board_if_valid_play(boards[0], stone, point)
-    if maybe_board == None:
-        return False
-
-    #Check if Ko rule is violated
-    if maybe_board == boards[1]:
-        return False
-    return True
-    """
-
-
 def _get_points_with_added_stones(new_board, old_board):
     points_with_added_stones = []
     for point, new_maybe_stone in iter(new_board):

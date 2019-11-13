@@ -22,6 +22,7 @@ def isValidBoard(board):
             and all(len(row) == BOARD_COL_LENGTH for row in board._grid)
             and all(isValidMaybeStone(stone) for point, stone in iter(board)))
 
+
 def handle_player(player, json_expr):
     command, *args = json_expr
     if command == "register" and len(args) == 0:
