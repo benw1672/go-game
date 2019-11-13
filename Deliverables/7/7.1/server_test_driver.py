@@ -4,7 +4,7 @@ from functools import partial
 
 # Import local dependencies.
 import constants, utils
-from player import RemoteProxyPlayer, command_player
+from player import RemoteProxyPlayer, StateProxyPlayer, command_player
 
 
 def main():
@@ -17,13 +17,14 @@ def main():
     with open(os.path.join(script_dir, 'go.config')) as f:
         network_config = json.load(f)
     serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    serversocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     serversocket.bind((network_config["IP"], network_config["port"]))
     # Accept only one connection for now.
     serversocket.listen(1)
     conn, address = serversocket.accept()
 
     # Instantiate player and action container.
-    remote_proxy_player = RemoteProxyPlayer(conn)
+    remote_proxy_player = StateProxyPlayer(RemoteProxyPlayer(conn))
 
     results = []
     for json_element in input_iter:

@@ -21,6 +21,7 @@ def main():
     with open(os.path.join(script_dir, 'go.config')) as f:
         network_config = json.load(f)
     clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    clientsocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     while True:
         try:
             time.sleep(1)
