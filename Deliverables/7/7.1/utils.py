@@ -20,9 +20,9 @@ def point_in_bounds(point):
 
 def get_valid_neighbors(point):
     x, y = point
-    neighbors = [Point(x-1, y), 
-                 Point(x, y-1), 
-                 Point(x+1, y), 
+    neighbors = [Point(x-1, y),
+                 Point(x, y-1),
+                 Point(x+1, y),
                  Point(x, y+1)]
     return [p for p in neighbors if point_in_bounds(p)]
 
@@ -70,7 +70,7 @@ def jsoncommand2internal(python_repr):
     command_name, *args = python_repr
     if command_name == "make-a-move":
         try:
-            assert len(args) == 1
+            assert len(args) == 1 and 1 <= len(args[0]) <= 3
             boards = [Board(json_board) for json_board in args[0]]
         except Exception:
             raise ValueError("JSON command string is not valid make-a-move command")
