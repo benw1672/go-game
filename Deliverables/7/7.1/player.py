@@ -29,6 +29,7 @@ def handle_player(player, json_expr):
     elif command == "receive-stones" and len(args) == 1:
         return player.receive_stones(*args)
     elif command == "make-a-move" and len(args) == 1:
+        #Need to check if raw input boards are of valid type
         boards = [Board(json_board) for json_board in args[0]]
         move = player.make_a_move(boards)
         if isinstance(move, str):
