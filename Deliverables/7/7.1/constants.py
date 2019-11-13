@@ -15,6 +15,7 @@ MAYBE_STONES = [BLACK, WHITE, EMPTY]
 # Types of turns.
 PASS = "pass"
 TURN_TYPES = [PASS] + STONES
+INVALID_HISTORY = "This history makes no sense!"
 
 # Player AI.
 AI_MAX_SEARCH_DEPTH = 1

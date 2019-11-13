@@ -1,5 +1,5 @@
 # Import nonlocal dependencies.
-import json, os, sys, typing
+import json, jsonpickle, os, sys, typing
 
 # Import local dependencies.
 from constants import *
@@ -7,8 +7,6 @@ import rule_checker as rc
 import utils
 from board import Board
 from point import Point
-
-GO_HAS_GONE_CRAZY = "GO has gone crazy!"
 
 def isValidStone(stone):
     return isinstance(stone, str) and stone in STONES
@@ -22,25 +20,63 @@ def isValidBoard(board):
             and all(len(row) == BOARD_COL_LENGTH for row in board._grid)
             and all(isValidMaybeStone(stone) for point, stone in iter(board)))
 
-def handle_player(player, json_expr):
-    command, *args = json_expr
-    if command == "register":
-        return player.register()
-    elif command == "receive-stones":
-        return player.receive_stones(*args)
-    elif command == "make-a-move":
-        boards = [Board(json_board) for json_board in args[0]]
-        move = player.make_a_move(boards)
-        if isinstance(move, str):
-            return move
-        elif isinstance(move, Point):
-            return str(move)
-    else:
-        #print("INVALID COMMAND: " + command)
+
+def command_player(player, json_element):
+    try:
+        command_name, *args = utils.jsoncommand2internal(json_element)
+    except ValueError:
         return GO_HAS_GONE_CRAZY
+    if command_name == "register":
+        return player.register()
+    elif command_name == "receive-stones":
+        return player.receive_stones(*args)
+    elif command_name == "make-a-move":
+        return player.make_a_move(*args)
 
 
-class PlayerStateProxy():
+class RemoteProxyPlayer():
+    def __init__(self, connection):
+        self.name = None
+        self.stone = None
+        self.connection = connection
+
+
+    def register(self):
+        command = ["register"]
+        # Use the connection to get a move over the wire.
+        self.connection.send(utils.jsonify(command).encode())
+        json_response = json.loads(self.connection.recv(2048).decode())
+        if not json_response:
+            raise RuntimeError("Connection to client is broken.")
+        self.name = json_response
+        return self.name
+
+
+    def receive_stones(self, stone):
+        command = ["receive-stones", stone]
+        self.connection.send(utils.jsonify(command).encode())
+        json_response = json.loads(self.connection.recv(2048).decode())
+        if not json_response == "OK":
+            raise RuntimeError("Connection to client is broken.")
+        return
+
+
+    def make_a_move(self, boards):
+        # Use the connection to get a move over the wire.
+        command = ["make-a-move", boards]
+        self.connection.send(utils.jsonify(command).encode())
+        json_response = json.loads(self.connection.recv(2048).decode())
+        if not json_response:
+            raise RuntimeError("Connection to client is broken.")
+        if json_response == PASS:
+            return PASS
+        if json_response == INVALID_HISTORY:
+            return INVALID_HISTORY
+        else:
+            return Point.from_str(json_response)
+
+
+class StateProxyPlayer():
     def __init__(self, real_player):
         self.real_player = real_player
         self.registered = False
@@ -58,17 +94,16 @@ class PlayerStateProxy():
             self.received_stone = True
             return self.real_player.receive_stones(stone)
         else:
-            #print("receive stones called before register")
             return GO_HAS_GONE_CRAZY
 
     def make_a_move(self, boards):
         if self.registered and self.received_stone:
             return self.real_player.make_a_move(boards)
         else:
-            #print("make_a_move called before register and receive_stones")
             return GO_HAS_GONE_CRAZY
 
-class PlayerContractProxy():
+
+class ContractProxyPlayer():
     def __init__(self, real_player):
         self.real_player = real_player
 
@@ -79,18 +114,16 @@ class PlayerContractProxy():
         if isValidStone(stone):
             return self.real_player.receive_stones(stone)
         else:
-            print("not a valid stone: " + stone)
             return GO_HAS_GONE_CRAZY
 
     def make_a_move(self, boards):
-        if all(isValidBoard(board) for board in boards):
+        if len(boards) <= 3 and all(isValidBoard(board) for board in boards):
             return self.real_player.make_a_move(boards)
         else:
-            print("not a valid boards")
             return GO_HAS_GONE_CRAZY
 
 
-class Player():
+class AIPlayer():
     def __init__(self, strategy=None, name="no name", stone=None):
         self.strategy = strategy
         self.name = name
@@ -106,6 +139,7 @@ class Player():
     def receive_stones(self, stone: str):
         self.stone = stone
         self.opponent_stone = utils.get_opponent_stone_color(stone)
+        return "OK"
 
 
     def make_a_move(self, boards: list):

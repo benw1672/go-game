@@ -7,10 +7,24 @@ from constants import *
 from point import Point
 from chain import Chain
 
+def enforce_board_contract(json_board):
+    if not isinstance(json_board, list):
+        raise ValueError
+    if len(json_board) != BOARD_ROW_LENGTH:
+        raise ValueError
+    for row in json_board:
+        if not isinstance(row, list) or len(row) != BOARD_COL_LENGTH:
+            raise ValueError
+    for row_idx in range(BOARD_ROW_LENGTH):
+        for col_idx in range(BOARD_COL_LENGTH):
+            if json_board[row_idx][col_idx] not in MAYBE_STONES:
+                raise ValueError
+
 
 class Board(object):
 # Initialization
     def __init__(self, grid=[[EMPTY]*BOARD_COL_LENGTH for _ in range(BOARD_ROW_LENGTH)]):
+        enforce_board_contract(grid)
         self._grid = grid
 
 

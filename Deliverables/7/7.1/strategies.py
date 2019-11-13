@@ -33,9 +33,8 @@ def select_simple_move(player_stone_color, boards):
 
     for point, maybe_stone in iter(boards[0]):
         if maybe_stone == EMPTY:
-            move = (point, boards)
-            #print(move)
-            if rc.is_move_legal(player_stone_color, move):
+            new_move = (point, boards)
+            if rc.is_new_move_legal(player_stone_color, new_move):
                 return point
     return PASS
 
@@ -61,7 +60,7 @@ def select_move_prioritizing_capture(player_stone_color, boards, depth):
         for chain in opponent_chains:
             if len(chain.liberties) == 1:
                 point = list(chain.liberties)[0]
-                if rc.is_move_legal(player_stone_color, (point, boards)):
+                if rc.is_new_move_legal(player_stone_color, (point, boards)):
                     moves.append(point)
     if depth > 1:
         # Idea: define new_move as [point()]
