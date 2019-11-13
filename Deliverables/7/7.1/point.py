@@ -19,14 +19,19 @@ def point_deserialize_helper(x, y):
     return Point(x, y)
 
 
+def enforce_point_contract(x, y):
+    if not isinstance(x, int) or not isinstance(y, int):
+        raise ValueError
+    if not is_row_index_in_bounds(x):
+        raise ValueError("Point.x must be within the bounds of the board.")
+    if not is_col_index_in_bounds(y):
+        raise ValueError("Point.y must be within the bounds of the board.")
+
 @total_ordering
 class Point(tuple):
 # For initialization.
     def __new__(cls, x, y):
-        if not is_row_index_in_bounds(x):
-            raise ValueError("Point.x must be within the bounds of the board.")
-        if not is_col_index_in_bounds(y):
-            raise ValueError("Point.y must be within the bounds of the board.")
+        enforce_point_contract(x, y)
         return super(Point, cls).__new__(cls, (x, y))
 
 
