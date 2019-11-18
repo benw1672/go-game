@@ -9,12 +9,15 @@ class StateProxyPlayer():
         self.real_player = real_player
         self.registered = False
         self.received_stone = False
+        self.name = None
 
 
     def register(self):
         if not self.registered:
             self.registered = True
-            return self.real_player.register()
+            name = self.real_player.register()
+            self.name = name
+            return name
         else:
             return GO_HAS_GONE_CRAZY
 

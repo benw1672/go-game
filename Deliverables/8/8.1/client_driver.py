@@ -4,7 +4,7 @@ import json, jsonpickle, os, sys, typing, socket, time
 # Import local dependencies.
 from players.state_proxy_player import StateProxyPlayer
 from players.ai_player import AIPlayer
-from players.strategies import PrioritizeCaptureStrategy
+from players.strategies import PrioritizeCaptureStrategy, SimpleStrategy
 from board import Board
 from constants import *
 import utils
@@ -13,7 +13,7 @@ import utils
 def main():
     script_dir = os.path.dirname(__file__)
     # Set up the player.
-    player = StateProxyPlayer(AIPlayer(PrioritizeCaptureStrategy(max_search_depth=1)))
+    player = StateProxyPlayer(AIPlayer(SimpleStrategy()))
 
     # Connect to server.
     with open(os.path.join(script_dir, 'go.config')) as f:

@@ -1,11 +1,13 @@
 # Import nonlocal dependencies.
 import json, jsonpickle, sys, typing, socket, os
 from functools import partial
+import importlib
 
 # Import local dependencies.
 import constants, utils
 from players.remote_proxy_player import RemoteProxyPlayer
 from players.state_proxy_player import StateProxyPlayer
+from players.strategies import PrioritizeCaptureStrategy
 import referee
 
 
@@ -15,10 +17,8 @@ def main():
         config = json.load(fd)
 
     # Instantiate a default player.
-    # default_player_impl_abs_path = os.path.join(script_dir, config["default-player"])
-    # print(default_player_impl_abs_path)
-    default_player_mod = __import__("players.default_player")
-    default_player = default_player_mod.Player()
+    default_player_mod = importlib.import_module(config["default-player"])
+    default_player = default_player_mod.make_player()
 
     # Start up server, listening on the port specified in the config file.
     serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
