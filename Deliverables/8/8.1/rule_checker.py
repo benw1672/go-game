@@ -94,7 +94,7 @@ def is_move_legal(stone, move):
 
 def is_new_move_legal(stone, new_move):
     point, boards = new_move
-    maybe_board = _get_board_if_valid_play(boards[0], stone, point)
+    maybe_board = get_board_if_valid_play(boards[0], stone, point)
     if maybe_board == None:
         return False
 
@@ -103,32 +103,8 @@ def is_new_move_legal(stone, new_move):
         return False
     return True
 
-def _get_points_with_added_stones(new_board, old_board):
-    points_with_added_stones = []
-    for point, new_maybe_stone in iter(new_board):
-        if new_maybe_stone in STONES and old_board[point] == EMPTY:
-            points_with_added_stones.append(point)
-    return points_with_added_stones
 
-
-def _get_turn_if_legal_progression(new_board, old_board):
-    points_with_added_stones = _get_points_with_added_stones(new_board, old_board)
-    # Handle case where it's a pass.
-    if len(points_with_added_stones) == 0:
-        if new_board == old_board:
-            return PASS
-    # Handle case where one new stone was placed.
-    elif len(points_with_added_stones) == 1:
-        point = points_with_added_stones[0]
-        added_stone = new_board[point]
-        legal_new_maybe_board = _get_board_if_valid_play(old_board, added_stone, point)
-        if legal_new_maybe_board and legal_new_maybe_board == new_board:
-            return added_stone
-    # Handle case where multiple new stones were placed.
-    return None
-
-
-def _get_board_if_valid_play(board, player_stone, point):
+def get_board_if_valid_play(board, player_stone, point):
     '''
     input: board, stone that has the turn,
             dictionary of keys "stone" and "point" and values their values
@@ -149,6 +125,31 @@ def _get_board_if_valid_play(board, player_stone, point):
     if  _get_captured_chains(new_board):
         return None
     return new_board
+
+
+def _get_points_with_added_stones(new_board, old_board):
+    points_with_added_stones = []
+    for point, new_maybe_stone in iter(new_board):
+        if new_maybe_stone in STONES and old_board[point] == EMPTY:
+            points_with_added_stones.append(point)
+    return points_with_added_stones
+
+
+def _get_turn_if_legal_progression(new_board, old_board):
+    points_with_added_stones = _get_points_with_added_stones(new_board, old_board)
+    # Handle case where it's a pass.
+    if len(points_with_added_stones) == 0:
+        if new_board == old_board:
+            return PASS
+    # Handle case where one new stone was placed.
+    elif len(points_with_added_stones) == 1:
+        point = points_with_added_stones[0]
+        added_stone = new_board[point]
+        legal_new_maybe_board = get_board_if_valid_play(old_board, added_stone, point)
+        if legal_new_maybe_board and legal_new_maybe_board == new_board:
+            return added_stone
+    # Handle case where multiple new stones were placed.
+    return None
 
 
 def _is_valid_turns(sequence_of_turns):

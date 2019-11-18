@@ -2,8 +2,9 @@
 import json, jsonpickle, os, sys, typing, socket, time
 
 # Import local dependencies.
-from player import StateProxyPlayer, AIPlayer, command_player
-from strategies import PrioritizeCaptureStrategy
+from players.state_proxy_player import StateProxyPlayer
+from players.ai_player import AIPlayer
+from players.strategies import PrioritizeCaptureStrategy
 from board import Board
 from constants import *
 import utils
@@ -12,9 +13,7 @@ import utils
 def main():
     script_dir = os.path.dirname(__file__)
     # Set up the player.
-    with open(os.path.join(script_dir, 'go-player.config')) as f:
-        player_config = json.load(f)
-    player = StateProxyPlayer(AIPlayer(PrioritizeCaptureStrategy(max_search_depth=player_config["depth"])))
+    player = StateProxyPlayer(AIPlayer(PrioritizeCaptureStrategy(max_search_depth=1)))
 
     # Connect to server.
     with open(os.path.join(script_dir, 'go.config')) as f:
@@ -29,8 +28,8 @@ def main():
         except OSError:
             continue
 
+    # Get commands from server and relay to player.
     while True:
-        # Get commands from server and relay to player.
         data = clientsocket.recv(8192).decode()
         if not data:
             break
@@ -40,6 +39,19 @@ def main():
             clientsocket.send(utils.jsonify(result).encode())
 
     clientsocket.close()
+
+
+def command_player(player, json_element):
+    try:
+        command_name, *args = utils.jsoncommand2internal(json_element)
+    except ValueError:
+        return GO_HAS_GONE_CRAZY
+    if command_name == "register":
+        return player.register()
+    elif command_name == "receive-stones":
+        return player.receive_stones(*args)
+    elif command_name == "make-a-move":
+        return player.make_a_move(*args)
 
 
 if __name__ == "__main__":
