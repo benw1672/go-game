@@ -1,7 +1,7 @@
 # Import nonlocal dependencies.
 import json, jsonpickle, sys, typing, socket, os
 from functools import partial
-import importlib
+from importlib import util
 
 # Import local dependencies.
 import constants, utils
@@ -16,8 +16,10 @@ def main():
     with open(os.path.join(script_dir, 'go.config')) as fd:
         config = json.load(fd)
 
-    # Instantiate a default player.
-    default_player_mod = importlib.import_module(config["default-player"])
+    # Instantiate a default player. Credits to team 44 for explaining how to do this.
+    spec = util.spec_from_file_location('players.default_player', config["default-player"])
+    default_player_mod = util.module_from_spec(spec)
+    spec.loader.exec_module(default_player_mod)
     default_player = default_player_mod.make_player()
 
     # Start up server, listening on the port specified in the config file.

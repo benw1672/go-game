@@ -20,8 +20,8 @@ class RemoteProxyPlayer():
         # Use the socket to get a move over the wire.
         self.socket.send(utils.jsonify(command).encode())
         json_response = json.loads(self.socket.recv(2048).decode())
-        if not json_response:
-            raise RuntimeError("Connection to client is broken.")
+        if not json_response or not isinstance(json_response, str):
+            raise RuntimeError("register: Connection to client is broken.")
         self.name = json_response
         return self.name
 
@@ -29,9 +29,6 @@ class RemoteProxyPlayer():
     def receive_stones(self, stone):
         command = ["receive-stones", stone]
         self.socket.send(utils.jsonify(command).encode())
-        json_response = json.loads(self.socket.recv(2048).decode())
-        if not json_response == "OK":
-            raise RuntimeError("Connection to client is broken.")
         return
 
 
@@ -41,10 +38,14 @@ class RemoteProxyPlayer():
         self.socket.send(utils.jsonify(command).encode())
         json_response = json.loads(self.socket.recv(2048).decode())
         if not json_response:
-            raise RuntimeError("Connection to client is broken.")
+            raise RuntimeError("make_a_move: Connection to client is broken.")
         if json_response == PASS:
             return PASS
         if json_response == INVALID_HISTORY:
             return INVALID_HISTORY
         else:
-            return Point.from_str(json_response)
+            try:
+                point = Point.from_str(json_response)
+                return point
+            except ValueError:
+                raise RuntimeError("make_a_move: Client provided invalid input")

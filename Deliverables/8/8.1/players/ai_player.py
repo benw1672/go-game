@@ -21,7 +21,6 @@ class AIPlayer():
 
     def receive_stones(self, stone: str):
         self.stone = stone
-        return "OK"
 
 
     def make_a_move(self, boards: list):

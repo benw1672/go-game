@@ -24,8 +24,7 @@ class RandomAnyPlayer():
 
     def receive_stones(self, stone: str):
         self.stone = stone
-        return "OK"
-
+        
 
     def make_a_move(self, boards: list):
         x = random.randint(0, BOARD_ROW_LENGTH-1)
