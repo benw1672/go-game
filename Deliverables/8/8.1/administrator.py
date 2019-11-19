@@ -37,7 +37,10 @@ def main():
     results = referee.play_a_game(remote_player, default_player)
     print(utils.jsonify(results))
 
-    clientsocket.shutdown(socket.SHUT_RDWR)
+    try:
+        clientsocket.shutdown(socket.SHUT_RDWR)
+    except OSError:
+        pass
     clientsocket.close()
     serversocket.close()
 
