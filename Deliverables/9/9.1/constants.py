@@ -21,3 +21,7 @@ INVALID_HISTORY = "This history makes no sense!"
 AI_MAX_SEARCH_DEPTH = 1
 
 GO_HAS_GONE_CRAZY = "GO has gone crazy!"
+
+# Tournament modes.
+LEAGUE = 500
+CUP = 600

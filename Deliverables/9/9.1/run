@@ -3,5 +3,12 @@
 # This is the file "run": it runs the actual submission
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-python3 $DIR/client_driver.py & python3 $DIR/administrator.py
-# python3 $DIR/administrator.py
+
+# python3 $DIR/client_driver.py & python3 $DIR/administrator.py $1 $2
+
+python3 $DIR/client_driver.py \
+& python3 $DIR/client_driver.py \
+& python3 $DIR/client_driver.py \
+& python3 $DIR/administrator.py $1 $2
+
+# python3 $DIR/administrator.py $1 $2

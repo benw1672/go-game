@@ -25,3 +25,6 @@ class AIPlayer():
 
     def make_a_move(self, boards: list):
         return self.strategy.get_move(self.stone, boards)
+
+    def end_game(self):
+        return "OK"

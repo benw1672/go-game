@@ -2,28 +2,7 @@ from constants import *
 from point import Point
 from board import Board
 import rule_checker as rc
-
-
-class RegisterBlack(object):
-    def act(self, container):
-        try:
-            name = container.black_player.register()
-            container.results.append(name)
-            container.black_player_name = name
-            container.next_action = RegisterWhite()
-        except RuntimeError:
-            container.next_action = BlackIllegalMove()
-
-
-class RegisterWhite(object):
-    def act(self, container):
-        try:
-            name = container.white_player.register()
-            container.results.append(name)
-            container.white_player_name = name
-            container.next_action = ReceiveStonesBlack()
-        except RuntimeError:
-            container.next_action = WhiteIllegalMove()
+from game_result import GameResult
 
 
 class ReceiveStonesBlack(object):
@@ -40,7 +19,6 @@ class ReceiveStonesWhite(object):
 
 class MakeAMoveBlack(object):
     def act(self, container):
-        container.results.append(container.boards)
         try:
             response = container.black_player.make_a_move(container.boards)
             if response == PASS and rc.is_move_legal(BLACK, PASS):
@@ -63,7 +41,6 @@ class MakeAMoveBlack(object):
 
 class MakeAMoveWhite(object):
     def act(self, container):
-        container.results.append(container.boards)
         try:
             response = container.white_player.make_a_move(container.boards)
             if response == PASS and rc.is_move_legal(WHITE, PASS):
@@ -86,41 +63,55 @@ class MakeAMoveWhite(object):
 
 class BlackIllegalMove(object):
     def act(self, container):
-        container.results.append([container.white_player_name])
+        container.game_result = GameResult(winner=container.white_player,
+                                        loser=container.black_player,
+                                        game_was_draw=False,
+                                        loser_was_cheating=True)
+        container.black_player.end_game()
+        container.white_player.end_game()
 
 
 class WhiteIllegalMove(object):
     def act(self, container):
-        container.results.append([container.black_player_name])
+        container.game_result = GameResult(winner=container.black_player,
+                                        loser=container.white_player,
+                                        game_was_draw=False,
+                                        loser_was_cheating=True)
+        container.black_player.end_game()
+        container.white_player.end_game()
 
 
 class LegalEnd(object):
     def act(self, container):
         scores = rc.get_scores(container.boards[0])
         if scores["B"] > scores["W"]:
-            container.results.append([container.black_player_name])
+            container.game_result = GameResult(winner=container.black_player,
+                                            loser=container.white_player,
+                                            game_was_draw=False,
+                                            loser_was_cheating=False)
         elif scores["W"] > scores["B"]:
-            container.results.append([container.white_player_name])
+            container.game_result = GameResult(winner=container.white_player,
+                                            loser=container.black_player,
+                                            game_was_draw=False,
+                                            loser_was_cheating=False)
         else:
-            container.results.append([container.black_player_name,
-                                        container.white_player_name])
+            container.game_result = GameResult(winner=None,
+                                            loser=None,
+                                            game_was_draw=True,
+                                            loser_was_cheating=False)
+        container.black_player.end_game()
+        container.white_player.end_game()
 
 
 class GameStateContainer(object):
     def __init__(self, black_player, white_player):
-        self.next_action = RegisterBlack()
+        self.next_action = ReceiveStonesBlack()
         self.black_player = black_player
         self.white_player = white_player
-        self.black_player_name = None
-        self.white_player_name = None
         self.boards = [Board()]
-        self.results = []
         self.previous_move_was_pass = False
+        self.game_result = None
 
     
     def act(self, *args):
         self.next_action.act(self, *args)
-
-
-    def get_results(self):
-        return self.results

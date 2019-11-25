@@ -27,3 +27,6 @@ class DumbPlayer():
 
     def make_a_move(self, boards: list):
         return PASS
+
+    def end_game(self):
+        return "OK"

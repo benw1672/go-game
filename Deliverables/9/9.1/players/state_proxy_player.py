@@ -35,3 +35,7 @@ class StateProxyPlayer():
             return self.real_player.make_a_move(boards)
         else:
             return GO_HAS_GONE_CRAZY
+
+
+    def end_game(self):
+        return self.real_player.end_game()

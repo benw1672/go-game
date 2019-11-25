@@ -54,3 +54,15 @@ class RemoteProxyPlayer():
                 return point
             except ValueError:
                 raise RuntimeError("make_a_move: Client provided invalid input")
+
+
+    def end_game(self):
+        command = ["end-game"]
+        try:
+            self.socket.send(utils.jsonify(command).encode())
+            json_response = json.loads(self.socket.recv(2048).decode())
+        except OSError:
+            return "OK"
+        if not json_response == "OK":
+            raise RuntimeError("Connection to client is broken.")
+        return "OK"

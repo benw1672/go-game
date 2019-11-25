@@ -30,3 +30,7 @@ class RandomAnyPlayer():
         x = random.randint(0, BOARD_ROW_LENGTH-1)
         y = random.randint(0, BOARD_COL_LENGTH-1)
         return Point(x, y)
+
+
+    def end_game(self):
+        return "OK"

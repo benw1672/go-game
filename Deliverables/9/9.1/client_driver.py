@@ -5,6 +5,7 @@ import json, jsonpickle, os, sys, typing, socket, time
 from players.state_proxy_player import StateProxyPlayer
 from players.ai_player import AIPlayer
 from players.strategies import PrioritizeCaptureStrategy, SimpleStrategy
+from players.random_any_player import RandomAnyPlayer
 from board import Board
 from constants import *
 import utils
@@ -13,7 +14,7 @@ import utils
 def main():
     script_dir = os.path.dirname(__file__)
     # Set up the player.
-    player = StateProxyPlayer(AIPlayer(SimpleStrategy()))
+    player = StateProxyPlayer(RandomAnyPlayer())
 
     # Connect to server.
     with open(os.path.join(script_dir, 'go.config')) as f:
@@ -52,6 +53,8 @@ def command_player(player, json_element):
         return player.receive_stones(*args)
     elif command_name == "make-a-move":
         return player.make_a_move(*args)
+    elif command_name == "end-game":
+        return player.end_game(*args)
 
 
 if __name__ == "__main__":

@@ -44,5 +44,11 @@ def jsoncommand2internal(python_repr):
         except Exception:
             raise ValueError
         return [command_name, *args]
+    elif command_name == "end-game":
+        try:
+            assert len(args) == 0
+        except Exception:
+            raise ValueError
+        return [command_name]
     else:
         raise ValueError("JSON command string is not valid.")

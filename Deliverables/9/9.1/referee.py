@@ -11,5 +11,4 @@ def play_a_game(black_player, white_player):
             game_state_container.act()
             break
 
-    return game_state_container.get_results()[-1]
-    # return game_state_container.get_results()
+    return game_state_container.game_result
