@@ -149,6 +149,8 @@ def play_league_tournament(players):
     for i in range(len(players)-1):
         for j in range(i+1, len(players)):
             game_result = referee.play_a_game(players[i], players[j])
+            [print(row) for row in adjacency_matrix]
+            print()
             if game_result.game_was_draw:
                 winner, loser = toss_coin(heads_player=players[i], tails_player=players[j])
                 if winner == players[i]:
@@ -159,17 +161,21 @@ def play_league_tournament(players):
                     adjacency_matrix[j][i] = 1
             elif game_result.loser_was_cheating:
                 if game_result.loser == players[i]:
+                    print(adjacency_matrix[i])
                     for k in range(len(players)):
                         if adjacency_matrix[i][k] is not None:
+                            print("HI")
                             adjacency_matrix[i][k], adjacency_matrix[k][i] = adjacency_matrix[k][i], adjacency_matrix[i][k]
-                            swap(adjacency_matrix[i][k], adjacency_matrix[k][i])
                     replace_cheating_player(players, i, cheating_players, player_to_name)
+                    adjacency_matrix[j][i] = 1
                 else:
+                    print(adjacency_matrix[j])
                     for k in range(len(players)):
                         if adjacency_matrix[j][k] is not None:
+                            print("HI")
                             adjacency_matrix[j][k], adjacency_matrix[k][j] = adjacency_matrix[k][j], adjacency_matrix[j][k]
-                            swap(adjacency_matrix[j][k], adjacency_matrix[k][j])
                     replace_cheating_player(players, j, cheating_players, player_to_name)
+                    adjacency_matrix[i][j] = 1
 
             else:
                 if game_result.winner == players[i]:
