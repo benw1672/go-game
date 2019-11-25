@@ -11,13 +11,14 @@ def make_player():
     return RandomAnyPlayer()
 
 
-class RandomAnyPlayer():
+class RandomAnyPlayer(object):
     def __init__(self):
         self.name = None
         self.stone = None
 
 
     def register(self):
+        #global identifier
         self.name = "random any player"
         return self.name
 

@@ -2,6 +2,7 @@
 import json, jsonpickle, sys, typing, socket, os, math, random
 from functools import partial
 from importlib import util
+from collections import defaultdict
 
 # Import local dependencies.
 from constants import *
@@ -18,13 +19,10 @@ def main():
     # Read from command line to see which tournament type will be played.
     mode, num_remote_players, num_default_players = get_tournament_parameters()
 
-    # Get config.
-    config = load_config()
-
     # Start up server, listening on the port specified in the config file.
     serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     serversocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    serversocket.bind((config["IP"], config["port"]))
+    serversocket.bind((IP, PORT))
 
     # Accept only one connection for now.
     serversocket.listen(num_remote_players)
@@ -41,14 +39,9 @@ def main():
         remote_player = StateProxyPlayer(RemoteProxyPlayer(clientsocket))
         players.append(remote_player)
 
-    # Load default player.
-    spec = util.spec_from_file_location('players.default_player', config["default-player"])
-    default_player_mod = util.module_from_spec(spec)
-    spec.loader.exec_module(default_player_mod)
-
     # Instantiate the necessary number of default players.
     for i in range(num_default_players):
-        players.append(default_player_mod.make_player())
+        players.append(DEFAULT_PLAYER_MODULE.make_player())
     
     # Play the tournament.
     if mode == CUP:
@@ -109,7 +102,7 @@ def play_cup_tournament_helper(players, rankings):
             winner, loser = toss_coin(heads_player=player1, tails_player=player2)
             winners.append(winner)
             fair_losers.append(loser)
-        if game_result.loser_was_cheating:
+        elif game_result.loser_was_cheating:
             winners.append(game_result.winner)
             rankings[0].append(game_result.loser)
         else:
@@ -125,9 +118,88 @@ def toss_coin(heads_player, tails_player):
     else:
         return tails_player, heads_player
 
+def replace_cheating_player(players, cheating_player_index, cheating_players, player_to_name):
+    #create default player
+    replacement_default_player = DEFAULT_PLAYER_MODULE.make_player()
+    name = replacement_default_player.register()
+    player_to_name[replacement_default_player] = name
+    #replace cheating player with default player
+    cheating_players.append(players[cheating_player_index])
+    players[cheating_player_index] = replacement_default_player
+
+def get_number_of_wins(player_row):
+    num_wins = 0
+    for value in player_row:
+        if value == 1:
+            num_wins += 1
+    return num_wins
 
 def play_league_tournament(players):
-    pass
+    """
+    1. 
+    """
+    player_to_name = {}
+    for player in players:
+        name = player.register()
+        player_to_name[player] = name
+
+    cheating_players = []
+    adjacency_matrix = [[None]*len(players) for _ in range(len(players))]
+
+    for i in range(len(players)-1):
+        for j in range(i+1, len(players)):
+            game_result = referee.play_a_game(players[i], players[j])
+            if game_result.game_was_draw:
+                winner, loser = toss_coin(heads_player=players[i], tails_player=players[j])
+                if winner == players[i]:
+                    adjacency_matrix[i][j] = 1
+                    adjacency_matrix[j][i] = 0
+                else:
+                    adjacency_matrix[i][j] = 0
+                    adjacency_matrix[j][i] = 1
+            elif game_result.loser_was_cheating:
+                if game_result.loser == players[i]:
+                    for k in range(len(players)):
+                        if adjacency_matrix[i][k] is not None:
+                            adjacency_matrix[i][k], adjacency_matrix[k][i] = adjacency_matrix[k][i], adjacency_matrix[i][k]
+                            swap(adjacency_matrix[i][k], adjacency_matrix[k][i])
+                    replace_cheating_player(players, i, cheating_players, player_to_name)
+                else:
+                    for k in range(len(players)):
+                        if adjacency_matrix[j][k] is not None:
+                            adjacency_matrix[j][k], adjacency_matrix[k][j] = adjacency_matrix[k][j], adjacency_matrix[j][k]
+                            swap(adjacency_matrix[j][k], adjacency_matrix[k][j])
+                    replace_cheating_player(players, j, cheating_players, player_to_name)
+
+            else:
+                if game_result.winner == players[i]:
+                    adjacency_matrix[i][j] = 1
+                    adjacency_matrix[j][i] = 0
+                else:
+                    adjacency_matrix[i][j] = 0
+                    adjacency_matrix[j][i] = 1
+
+    # result = []
+    # for i in range(len(players)):
+    #     result.append((player_to_name[players[i]], get_number_of_wins(adjacency_matrix[i])))
+    # for cheating_player in cheating_players:
+    #     result.append((player_to_name[cheating_players], 0))
+    # result.sort(key=lambda x: (x[1], x[0]))
+    rankings = []
+    score_to_players = defaultdict(list)
+    for i, player in enumerate(players):
+        score = get_number_of_wins(adjacency_matrix[i])
+        score_to_players[score].append(player)
+
+    rankings.append(cheating_players)
+    for score in sorted(score_to_players.keys()):
+        rankings.append(score_to_players[score])
+
+    return pretty_format_rankings(rankings, player_to_name)
+
+
+
+
 
 
 def get_tournament_parameters():
@@ -145,12 +217,6 @@ def get_tournament_parameters():
     num_default_players = nearest_power_of_two(num_remote_players) - num_remote_players
     return mode, num_remote_players, num_default_players
 
-
-def load_config():
-    script_dir = os.path.dirname(__file__)
-    with open(os.path.join(script_dir, 'go.config')) as fd:
-        config = json.load(fd)
-    return config
 
 
 def close_client(clientsocket):
