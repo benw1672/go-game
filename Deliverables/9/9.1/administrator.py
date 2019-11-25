@@ -59,10 +59,15 @@ def main():
 def play_cup_tournament(players):
     # Ask each player to register.
     player_to_name = {}
-    for player in players:
-        name = player.register()
-        player_to_name[player] = name
-    final_rankings = play_cup_tournament_helper(players, rankings=[[]])
+    cheating_players = []
+    for i, player in enumerate(players):
+        try:
+            name = player.register()
+            player_to_name[player] = name
+        except RuntimeError:
+            replace_cheating_player(players, i, cheating_players, player_to_name)
+
+    final_rankings = play_cup_tournament_helper(players, rankings=[cheating_players])
     return pretty_format_rankings(final_rankings, player_to_name)
 
 
@@ -119,32 +124,30 @@ def toss_coin(heads_player, tails_player):
         return tails_player, heads_player
 
 def replace_cheating_player(players, cheating_player_index, cheating_players, player_to_name):
-    #create default player
+    #create replacement default player
     replacement_default_player = DEFAULT_PLAYER_MODULE.make_player()
     name = replacement_default_player.register()
     player_to_name[replacement_default_player] = name
-    #replace cheating player with default player
+    #add player to cheating players
     cheating_players.append(players[cheating_player_index])
+    #replace cheating player with default player
     players[cheating_player_index] = replacement_default_player
-
-def get_number_of_wins(player_row):
-    num_wins = 0
-    for value in player_row:
-        if value == 1:
-            num_wins += 1
-    return num_wins
 
 def play_league_tournament(players):
     """
-    1. 
+    1.
     """
     player_to_name = {}
-    for player in players:
-        name = player.register()
-        player_to_name[player] = name
-
     cheating_players = []
-    adjacency_matrix = [[None]*len(players) for _ in range(len(players))]
+
+    for i, player in enumerate(players):
+        try:
+            name = player.register()
+            player_to_name[player] = name
+        except RuntimeError:
+            replace_cheating_player(players, i, cheating_players, player_to_name)
+
+    adjacency_matrix = [[0]*len(players) for _ in range(len(players))]
 
     for i in range(len(players)-1):
         for j in range(i+1, len(players)):
@@ -161,22 +164,19 @@ def play_league_tournament(players):
                     adjacency_matrix[j][i] = 1
             elif game_result.loser_was_cheating:
                 if game_result.loser == players[i]:
-                    print(adjacency_matrix[i])
                     for k in range(len(players)):
-                        if adjacency_matrix[i][k] is not None:
-                            print("HI")
+                        #only give back point if the other player hasn't been replaced
+                        if k != i and adjacency_matrix[i][k] == 1 and players[k] not in cheating_players:
                             adjacency_matrix[i][k], adjacency_matrix[k][i] = adjacency_matrix[k][i], adjacency_matrix[i][k]
                     replace_cheating_player(players, i, cheating_players, player_to_name)
+                    #give winner the point
                     adjacency_matrix[j][i] = 1
                 else:
-                    print(adjacency_matrix[j])
                     for k in range(len(players)):
-                        if adjacency_matrix[j][k] is not None:
-                            print("HI")
+                        if k != j and adjacency_matrix[j][k] == 1 and players[k] not in cheating_players:
                             adjacency_matrix[j][k], adjacency_matrix[k][j] = adjacency_matrix[k][j], adjacency_matrix[j][k]
                     replace_cheating_player(players, j, cheating_players, player_to_name)
                     adjacency_matrix[i][j] = 1
-
             else:
                 if game_result.winner == players[i]:
                     adjacency_matrix[i][j] = 1
@@ -185,16 +185,10 @@ def play_league_tournament(players):
                     adjacency_matrix[i][j] = 0
                     adjacency_matrix[j][i] = 1
 
-    # result = []
-    # for i in range(len(players)):
-    #     result.append((player_to_name[players[i]], get_number_of_wins(adjacency_matrix[i])))
-    # for cheating_player in cheating_players:
-    #     result.append((player_to_name[cheating_players], 0))
-    # result.sort(key=lambda x: (x[1], x[0]))
     rankings = []
     score_to_players = defaultdict(list)
     for i, player in enumerate(players):
-        score = get_number_of_wins(adjacency_matrix[i])
+        score = sum(adjacency_matrix[i])
         score_to_players[score].append(player)
 
     rankings.append(cheating_players)
@@ -202,10 +196,6 @@ def play_league_tournament(players):
         rankings.append(score_to_players[score])
 
     return pretty_format_rankings(rankings, player_to_name)
-
-
-
-
 
 
 def get_tournament_parameters():

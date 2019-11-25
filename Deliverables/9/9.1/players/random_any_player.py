@@ -1,4 +1,4 @@
-import sys, os, random
+import sys, os, random, time
 
 from .strategies import SimpleStrategy
 sys.path.append(os.path.abspath('..'))
@@ -19,7 +19,7 @@ class RandomAnyPlayer(object):
 
     def register(self):
         #global identifier
-        self.name = "random any player"
+        self.name = "random any player" + str(time.time())
         return self.name
 
 
