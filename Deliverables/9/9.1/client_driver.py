@@ -1,5 +1,7 @@
 # Import nonlocal dependencies.
 import json, jsonpickle, os, sys, typing, socket, time
+from functools import partial
+from io import StringIO
 
 # Import local dependencies.
 from players.state_proxy_player import StateProxyPlayer
@@ -35,10 +37,11 @@ def main():
         data = clientsocket.recv(8192).decode()
         if not data:
             break
-        json_input = json.loads(data)
-        result = command_player(player, json_input)
-        if result:
-            clientsocket.send(utils.jsonify(result).encode())
+        json_input_iter = stream_to_json_gen(StringIO(data))
+        for json_input in json_input_iter:
+            result = command_player(player, json_input)
+            if result:
+                clientsocket.send(utils.jsonify(result).encode())
 
     clientsocket.close()
 
@@ -56,6 +59,22 @@ def command_player(player, json_element):
         return player.make_a_move(*args)
     elif command_name == "end-game":
         return player.end_game(*args)
+
+
+def stream_to_json_gen(stream):
+    decoder = json.JSONDecoder()
+    buffer = ''
+    buffersize=10
+    for chunk in iter(partial(stream.read, buffersize), ''):
+         buffer += chunk
+         while buffer:
+             try:
+                 result, index = decoder.raw_decode(buffer.lstrip())
+                 yield result
+                 buffer = buffer.lstrip()[index:]
+             except ValueError:
+                 # Not enough data to decode, read more
+                 break
 
 
 if __name__ == "__main__":

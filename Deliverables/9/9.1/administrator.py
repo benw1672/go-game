@@ -68,7 +68,7 @@ def play_cup_tournament(players):
         except RuntimeError:
             replace_cheating_player(players, i, cheating_players, player_to_name)
 
-    final_rankings = play_cup_tournament_helper(players, rankings=[cheating_players])
+    final_rankings = play_cup_tournament_helper(players, rankings=[[]])
     return pretty_format_rankings(final_rankings, player_to_name)
 
 
@@ -124,6 +124,7 @@ def toss_coin(heads_player, tails_player):
     else:
         return tails_player, heads_player
 
+
 def replace_cheating_player(players, cheating_player_index, cheating_players, player_to_name):
     #create replacement default player
     replacement_default_player = DEFAULT_PLAYER_MODULE.make_player()
@@ -133,6 +134,7 @@ def replace_cheating_player(players, cheating_player_index, cheating_players, pl
     cheating_players.append(players[cheating_player_index])
     #replace cheating player with default player
     players[cheating_player_index] = replacement_default_player
+
 
 def play_league_tournament(players):
     """
@@ -210,7 +212,6 @@ def get_tournament_parameters():
         raise ValueError("Incorrect command-line arguments.")
     num_default_players = nearest_power_of_two(num_remote_players) - num_remote_players
     return mode, num_remote_players, num_default_players
-
 
 
 def close_client(clientsocket):
