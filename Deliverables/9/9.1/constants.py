@@ -3,6 +3,7 @@ This module defines any package-global constants.
 '''
 import os, json
 from importlib import util
+import players
 
 # Board dimensions.
 BOARD_COL_LENGTH = 9

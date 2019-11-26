@@ -1,6 +1,6 @@
 import sys, os, random, time
 
-from .strategies import SimpleStrategy
+from players.strategies import SimpleStrategy
 sys.path.append(os.path.abspath('..'))
 import utils
 from constants import *
