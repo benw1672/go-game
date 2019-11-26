@@ -32,7 +32,10 @@ class RemoteProxyPlayer():
 
     def receive_stones(self, stone):
         command = ["receive-stones", stone]
-        self.socket.send(utils.jsonify(command).encode())
+        try:
+            self.socket.send(utils.jsonify(command).encode())
+        except CONNECTION_ERRORS:
+            raise RuntimeError("receive-stones: Connection to client is broken.")
         return
 
 

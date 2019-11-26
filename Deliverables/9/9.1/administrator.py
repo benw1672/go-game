@@ -222,7 +222,10 @@ def close_client(clientsocket):
 
 
 def nearest_power_of_two(n):
-    return 2**math.ceil(math.log2(n))
+    if n == 1:
+        return 2
+    else:
+        return 2**math.ceil(math.log2(n))
 
 
 if __name__ == "__main__":

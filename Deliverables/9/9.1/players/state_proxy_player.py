@@ -38,4 +38,6 @@ class StateProxyPlayer():
 
 
     def end_game(self):
+        self.registered = False
+        self.received_stone = False
         return self.real_player.end_game()

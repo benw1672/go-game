@@ -7,14 +7,20 @@ from game_result import GameResult
 
 class ReceiveStonesBlack(object):
     def act(self, container):
-        container.black_player.receive_stones(BLACK)
-        container.next_action = ReceiveStonesWhite()
+        try:
+            container.black_player.receive_stones(BLACK)
+            container.next_action = ReceiveStonesWhite()
+        except RuntimeError:
+            container.next_action = BlackIllegalMove()
 
 
 class ReceiveStonesWhite(object):
     def act(self, container):
-        container.white_player.receive_stones(WHITE)
-        container.next_action = MakeAMoveBlack()
+        try:
+            container.white_player.receive_stones(WHITE)
+            container.next_action = MakeAMoveBlack()
+        except:
+            container.next_action = WhiteIllegalMove()
 
 
 class MakeAMoveBlack(object):
@@ -63,26 +69,50 @@ class MakeAMoveWhite(object):
 
 class BlackIllegalMove(object):
     def act(self, container):
+        try:
+            container.black_player.end_game()
+        except RuntimeError:
+            pass
+        try:
+            container.white_player.end_game()
+        except RuntimeError:
+            pass
         container.game_result = GameResult(winner=container.white_player,
                                         loser=container.black_player,
                                         game_was_draw=False,
                                         loser_was_cheating=True)
-        container.black_player.end_game()
-        container.white_player.end_game()
 
 
 class WhiteIllegalMove(object):
     def act(self, container):
+        try:
+            container.black_player.end_game()
+        except RuntimeError:
+            pass
+        try:
+            container.white_player.end_game()
+        except RuntimeError:
+            pass
         container.game_result = GameResult(winner=container.black_player,
                                         loser=container.white_player,
                                         game_was_draw=False,
                                         loser_was_cheating=True)
-        container.black_player.end_game()
-        container.white_player.end_game()
 
 
 class LegalEnd(object):
     def act(self, container):
+        try:
+            container.black_player.end_game()
+        except RuntimeError:
+            container.next_action = BlackIllegalMove()
+            return
+
+        try:
+            container.white_player.end_game()
+        except RuntimeError:
+            container.next_action = WhiteIllegalMove()
+            return
+            
         scores = rc.get_scores(container.boards[0])
         if scores["B"] > scores["W"]:
             container.game_result = GameResult(winner=container.black_player,
@@ -99,8 +129,6 @@ class LegalEnd(object):
                                             loser=None,
                                             game_was_draw=True,
                                             loser_was_cheating=False)
-        container.black_player.end_game()
-        container.white_player.end_game()
 
 
 class GameStateContainer(object):

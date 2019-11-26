@@ -6,6 +6,7 @@ from players.state_proxy_player import StateProxyPlayer
 from players.ai_player import AIPlayer
 from players.strategies import PrioritizeCaptureStrategy, SimpleStrategy
 from players.random_any_player import RandomAnyPlayer
+from players.human_player import HumanPlayer
 from board import Board
 from constants import *
 import utils
@@ -14,7 +15,7 @@ import utils
 def main():
     script_dir = os.path.dirname(__file__)
     # Set up the player.
-    player = StateProxyPlayer(RandomAnyPlayer())
+    player = StateProxyPlayer(HumanPlayer())
 
     # Connect to server.
     with open(os.path.join(script_dir, 'go.config')) as f:
