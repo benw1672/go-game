@@ -8,6 +8,8 @@ from point import Point
 from constants import *
 
 
+CONNECTION_ERRORS = (ConnectionResetError, OSError, json.decoder.JSONDecodeError)
+
 class RemoteProxyPlayer():
     def __init__(self, socket):
         self.name = None
@@ -17,10 +19,10 @@ class RemoteProxyPlayer():
 
     def register(self):
         command = ["register"]
-        self.socket.send(utils.jsonify(command).encode())
         try:
+            self.socket.send(utils.jsonify(command).encode())
             json_response = json.loads(self.socket.recv(2048).decode())
-        except ConnectionResetError:
+        except CONNECTION_ERRORS:
             raise RuntimeError("Connected dropped by the player")
         if not json_response or not isinstance(json_response, str):
             raise RuntimeError("register: Connection to client is broken.")
@@ -37,10 +39,10 @@ class RemoteProxyPlayer():
     def make_a_move(self, boards):
         # Use the socket to get a move over the wire.
         command = ["make-a-move", boards]
-        self.socket.send(utils.jsonify(command).encode())
         try:
+            self.socket.send(utils.jsonify(command).encode())
             json_response = json.loads(self.socket.recv(2048).decode())
-        except ConnectionResetError:
+        except CONNECTION_ERRORS:
             raise RuntimeError("Connected dropped by the player")
         if not json_response:
             raise RuntimeError("make_a_move: Connection to client is broken.")
@@ -61,7 +63,7 @@ class RemoteProxyPlayer():
         try:
             self.socket.send(utils.jsonify(command).encode())
             json_response = json.loads(self.socket.recv(2048).decode())
-        except OSError:
+        except CONNECTION_ERRORS:
             return "OK"
         if not json_response == "OK":
             raise RuntimeError("Connection to client is broken.")
