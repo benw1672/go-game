@@ -200,10 +200,10 @@ def play_league_tournament(players):
 
 
 def get_tournament_parameters():
-    if sys.argv[1] == "-league" and sys.argv[2].isdigit():
+    if sys.argv[1] == "--league" and sys.argv[2].isdigit():
         mode = LEAGUE
         num_remote_players = int(sys.argv[2])
-    elif sys.argv[1] == "-cup" and sys.argv[2].isdigit():
+    elif sys.argv[1] == "--cup" and sys.argv[2].isdigit():
         mode = CUP
         num_remote_players = int(sys.argv[2])
     else:
