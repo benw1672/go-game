@@ -15,6 +15,7 @@ from game_result import GameResult
 import referee
 
 
+
 def main():
     # Read from command line to see which tournament type will be played.
     mode, num_remote_players, num_default_players = get_tournament_parameters()
