@@ -200,15 +200,12 @@ def play_league_tournament(players):
 
 
 def get_tournament_parameters():
-    if (len(sys.argv) == 3):
-        if sys.argv[1] == "-league" and sys.argv[2].isdigit():
-            mode = LEAGUE
-            num_remote_players = int(sys.argv[2])
-        elif sys.argv[1] == "-cup" and sys.argv[2].isdigit():
-            mode = CUP
-            num_remote_players = int(sys.argv[2])
-        else:
-            raise ValueError("Incorrect command-line arguments.")
+    if sys.argv[1] == "-league" and sys.argv[2].isdigit():
+        mode = LEAGUE
+        num_remote_players = int(sys.argv[2])
+    elif sys.argv[1] == "-cup" and sys.argv[2].isdigit():
+        mode = CUP
+        num_remote_players = int(sys.argv[2])
     else:
         raise ValueError("Incorrect command-line arguments.")
     num_default_players = nearest_power_of_two(num_remote_players) - num_remote_players
