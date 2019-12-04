@@ -42,3 +42,7 @@ PORT = config["port"]
 spec = util.spec_from_file_location('players.default_player', config["default-player"])
 DEFAULT_PLAYER_MODULE = util.module_from_spec(spec)
 spec.loader.exec_module(DEFAULT_PLAYER_MODULE)
+
+# Tournament
+WIN = 1
+LOSE = 0

@@ -17,7 +17,7 @@ import utils
 def main():
     script_dir = os.path.dirname(__file__)
     # Set up the player.
-    player = StateProxyPlayer(HumanPlayer())
+    player = StateProxyPlayer(RandomAnyPlayer())
 
     # Connect to server.
     with open(os.path.join(script_dir, 'go.config')) as f:
