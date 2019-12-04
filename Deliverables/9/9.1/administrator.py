@@ -150,48 +150,46 @@ def play_league_tournament(players):
         except RuntimeError:
             replace_cheating_player(players, i, cheating_players, player_to_name)
 
-    adjacency_matrix = [[0]*len(players) for _ in range(len(players))]
+    score_board = [[LOSE]*len(players) for _ in range(len(players))]
 
     for i in range(len(players)-1):
         for j in range(i+1, len(players)):
             game_result = referee.play_a_game(players[i], players[j])
-            [print(row) for row in adjacency_matrix]
+            [print(row) for row in score_board]
             print()
             if game_result.game_was_draw:
                 winner, loser = toss_coin(heads_player=players[i], tails_player=players[j])
                 if winner == players[i]:
-                    adjacency_matrix[i][j] = 1
-                    adjacency_matrix[j][i] = 0
+                    score_board[i][j] = WIN
                 else:
-                    adjacency_matrix[i][j] = 0
-                    adjacency_matrix[j][i] = 1
+                    score_board[j][i] = WIN
             elif game_result.loser_was_cheating:
                 if game_result.loser == players[i]:
-                    for k in range(len(players)):
-                        #only give back point if the other player hasn't been replaced
-                        if k != i and adjacency_matrix[i][k] == 1 and players[k] not in cheating_players:
-                            adjacency_matrix[i][k], adjacency_matrix[k][i] = adjacency_matrix[k][i], adjacency_matrix[i][k]
-                    replace_cheating_player(players, i, cheating_players, player_to_name)
-                    #give winner the point
-                    adjacency_matrix[j][i] = 1
+                    winner_index = j
+                    cheater_index = i
                 else:
-                    for k in range(len(players)):
-                        if k != j and adjacency_matrix[j][k] == 1 and players[k] not in cheating_players:
-                            adjacency_matrix[j][k], adjacency_matrix[k][j] = adjacency_matrix[k][j], adjacency_matrix[j][k]
-                    replace_cheating_player(players, j, cheating_players, player_to_name)
-                    adjacency_matrix[i][j] = 1
+                    winner_index = i
+                    cheater_index = j
+                for other_player_index in range(len(players)):
+                    # only give back point if the other player hasn't been replaced
+                    if (other_player_index != cheater_index
+                            and score_board[cheater_index][other_player_index] == WIN
+                            and players[other_player_index] not in cheating_players):
+                        score_board[cheater_index][other_player_index] = LOSE
+                        score_board[other_player_index][cheater_index] = WIN
+                replace_cheating_player(players, cheater_index, cheating_players, player_to_name)
+                #give winner the point
+                score_board[winner_index][cheater_index] = WIN
             else:
                 if game_result.winner == players[i]:
-                    adjacency_matrix[i][j] = 1
-                    adjacency_matrix[j][i] = 0
+                    score_board[i][j] = WIN
                 else:
-                    adjacency_matrix[i][j] = 0
-                    adjacency_matrix[j][i] = 1
+                    score_board[j][i] = WIN
 
     rankings = []
     score_to_players = defaultdict(list)
     for i, player in enumerate(players):
-        score = sum(adjacency_matrix[i])
+        score = sum(score_board[i])
         score_to_players[score].append(player)
 
     rankings.append(cheating_players)
