@@ -8,9 +8,10 @@ from point import Point
 from constants import *
 from .order_proxy_player import OrderProxyPlayer
 from .history_check_proxy_player import HistoryCheckProxyPlayer
+from .logging_proxy_player import LoggingProxyPlayer
 
 def make_player(connection):
-    return OrderProxyPlayer(RemoteProxyPlayer(connection))
+    return LoggingProxyPlayer(OrderProxyPlayer(RemoteProxyPlayer(connection)))
 
 CONNECTION_ERRORS = (ConnectionResetError, OSError, json.decoder.JSONDecodeError)
 

@@ -2,11 +2,12 @@ import sys, os, random, time
 sys.path.append(os.path.abspath('..'))
 from .order_proxy_player import OrderProxyPlayer
 from .history_check_proxy_player import HistoryCheckProxyPlayer
+from .logging_proxy_player import LoggingProxyPlayer
 from point import Point
 from constants import *
 
 def make_player():
-    return HistoryCheckProxyPlayer(OrderProxyPlayer(RandomSometimesIllegalPlayer()))
+    return LoggingProxyPlayer(HistoryCheckProxyPlayer(OrderProxyPlayer(RandomSometimesIllegalPlayer())))
 
 class RandomSometimesIllegalPlayer(object):
     def __init__(self):

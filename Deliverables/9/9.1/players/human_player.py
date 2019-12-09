@@ -4,9 +4,10 @@ sys.path.append(os.path.abspath('..'))
 import utils
 from .order_proxy_player import OrderProxyPlayer
 from .history_check_proxy_player import HistoryCheckProxyPlayer
+from .logging_proxy_player import LoggingProxyPlayer
 
 def make_player():
-    return HistoryCheckProxyPlayer(OrderProxyPlayer(HumanPlayer()))
+    return LoggingProxyPlayer(HistoryCheckProxyPlayer(OrderProxyPlayer(HumanPlayer())))
 
 class HumanPlayer(object):
     def __init__(self):
@@ -26,7 +27,6 @@ class HumanPlayer(object):
 
 
     def make_a_move(self, boards: list):
-        print(utils.jsonify(boards))
         text = input("make-a-move: ")
         return text
 
