@@ -6,7 +6,11 @@ sys.path.append(os.path.abspath('..'))
 import utils
 from point import Point
 from constants import *
+from .order_proxy_player import OrderProxyPlayer
+from .history_check_proxy_player import HistoryCheckProxyPlayer
 
+def make_player(connection):
+    return HistoryCheckProxyPlayer(OrderProxyPlayer(RemoteProxyPlayer(connection)))
 
 CONNECTION_ERRORS = (ConnectionResetError, OSError, json.decoder.JSONDecodeError)
 

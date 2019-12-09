@@ -1,36 +1,37 @@
 import sys, os
-
 sys.path.append(os.path.abspath('..'))
 import utils
+from constants import *
+import rule_checker as rc
 from .order_proxy_player import OrderProxyPlayer
 from .history_check_proxy_player import HistoryCheckProxyPlayer
 
 def make_player():
-    return HistoryCheckProxyPlayer(OrderProxyPlayer(HumanPlayer()))
+    return HistoryCheckProxyPlayer(OrderProxyPlayer(SimplePlayer()))
 
-class HumanPlayer(object):
+class SimplePlayer():
     def __init__(self):
         self.name = None
         self.stone = None
 
 
     def register(self):
-        text = input("register: ")
-        self.name = text
+        self.name = "simple player"
         return self.name
 
 
     def receive_stones(self, stone: str):
-        print("receive-stones", stone)
         self.stone = stone
 
 
     def make_a_move(self, boards: list):
-        print(utils.jsonify(boards))
-        text = input("make-a-move: ")
-        return text
+        for point, maybe_stone in iter(boards[0]):
+            if maybe_stone == EMPTY:
+                new_move = (point, boards)
+                if rc.is_new_move_legal(self.stone, new_move):
+                    return point
+        return PASS
 
 
     def end_game(self):
-        text = input("end-game: ")
-        return text
+        return "OK"

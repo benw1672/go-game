@@ -1,15 +1,12 @@
 # Import nonlocal dependencies.
-import json, jsonpickle, os, sys, typing, socket, time
+import socket, time
 from functools import partial
 from io import StringIO
 
 # Import local dependencies.
-from players.state_proxy_player import StateProxyPlayer
-from players.ai_player import AIPlayer
-from players.strategies import PrioritizeCaptureStrategy, SimpleStrategy
-from players.random_any_player import RandomAnyPlayer
+from players.order_proxy_player import OrderProxyPlayer
+import players.random_sometimes_illegal_player as random_sometimes_illegal_player
 from players.human_player import HumanPlayer
-from board import Board
 from constants import *
 import utils
 
@@ -17,7 +14,7 @@ import utils
 def main():
     script_dir = os.path.dirname(__file__)
     # Set up the player.
-    player = StateProxyPlayer(RandomAnyPlayer())
+    player = random_sometimes_illegal_player.make_player()
 
     # Connect to server.
     with open(os.path.join(script_dir, 'go.config')) as f:

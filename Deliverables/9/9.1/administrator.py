@@ -1,17 +1,10 @@
 # Import nonlocal dependencies.
-import json, jsonpickle, sys, typing, socket, os, math, random
-from functools import partial
-from importlib import util
+import sys, socket, math, random
 from collections import defaultdict
 
 # Import local dependencies.
 from constants import *
-import utils
-from players.remote_proxy_player import RemoteProxyPlayer
-from players.state_proxy_player import StateProxyPlayer
-from players.strategies import PrioritizeCaptureStrategy
-from game_state import BlackIllegalMove, WhiteIllegalMove, LegalEnd
-from game_result import GameResult
+import players.remote_proxy_player as remote_proxy_player
 import referee
 
 
@@ -25,7 +18,8 @@ def main():
     serversocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     serversocket.bind((IP, PORT))
 
-    # Accept only one connection for now.
+    # socket.listen(num_parallel_conn) is the number of parallel connections you can handle
+    # only allows up to 10
     serversocket.listen(num_remote_players)
     num_connections = 0
     clientsockets = []
@@ -37,7 +31,7 @@ def main():
     # Instantiate representative of the remote player.
     players = []
     for clientsocket in clientsockets:
-        remote_player = StateProxyPlayer(RemoteProxyPlayer(clientsocket))
+        remote_player = remote_proxy_player.make_player(clientsocket)
         players.append(remote_player)
 
     # Instantiate the necessary number of default players.
@@ -84,6 +78,7 @@ def pretty_format_rankings(rankings, player_to_name):
 
 
 def play_cup_tournament_helper(players, rankings):
+    #instead of rankings, call it rankings_accumulator
     """
     rankings:
     16 players
