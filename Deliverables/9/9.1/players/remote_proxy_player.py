@@ -1,5 +1,5 @@
 # Nonlocal imports.
-import json, sys, os
+import json, sys, os, time
 
 # Local imports.
 sys.path.append(os.path.abspath('..'))
@@ -10,11 +10,11 @@ from .order_proxy_player import OrderProxyPlayer
 from .history_check_proxy_player import HistoryCheckProxyPlayer
 
 def make_player(connection):
-    return HistoryCheckProxyPlayer(OrderProxyPlayer(RemoteProxyPlayer(connection)))
+    return OrderProxyPlayer(RemoteProxyPlayer(connection))
 
 CONNECTION_ERRORS = (ConnectionResetError, OSError, json.decoder.JSONDecodeError)
 
-class RemoteProxyPlayer():
+class RemoteProxyPlayer(object):
     def __init__(self, socket):
         self.name = None
         self.stone = None

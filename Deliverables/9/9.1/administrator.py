@@ -8,8 +8,21 @@ import players.remote_proxy_player as remote_proxy_player
 import referee
 
 
+# Config file.
+script_dir = os.path.dirname(__file__)
+with open(os.path.join(script_dir, 'go.config')) as fd:
+    config = json.load(fd)
+IP = config["IP"]
+PORT = config["port"]
+
+# Load default player.
+spec = util.spec_from_file_location('players.default_player', config["default-player"])
+DEFAULT_PLAYER_MODULE = util.module_from_spec(spec)
+spec.loader.exec_module(DEFAULT_PLAYER_MODULE)
 
 def main():
+    global IP, PORT, DEFAULT_PLAYER_MODULE
+
     # Read from command line to see which tournament type will be played.
     mode, num_remote_players, num_default_players = get_tournament_parameters()
 
@@ -121,6 +134,7 @@ def toss_coin(heads_player, tails_player):
 
 
 def replace_cheating_player(players, cheating_player_index, cheating_players, player_to_name):
+    global DEFAULT_PLAYER_MODULE
     #create replacement default player
     replacement_default_player = DEFAULT_PLAYER_MODULE.make_player()
     name = replacement_default_player.register()

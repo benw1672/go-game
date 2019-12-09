@@ -1,4 +1,4 @@
-import sys, os
+import sys, os, time
 sys.path.append(os.path.abspath('..'))
 import utils
 from constants import *
@@ -9,14 +9,14 @@ from .history_check_proxy_player import HistoryCheckProxyPlayer
 def make_player():
     return HistoryCheckProxyPlayer(OrderProxyPlayer(SimplePlayer()))
 
-class SimplePlayer():
+class SimplePlayer(object):
     def __init__(self):
         self.name = None
         self.stone = None
 
 
     def register(self):
-        self.name = "simple player"
+        self.name = "simple player " + str(time.time())
         return self.name
 
 

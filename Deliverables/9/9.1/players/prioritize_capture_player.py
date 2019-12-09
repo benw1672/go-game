@@ -1,4 +1,4 @@
-import sys, os
+import sys, os, time
 sys.path.append(os.path.abspath('..'))
 import utils
 import rule_checker as rc
@@ -9,7 +9,7 @@ from .history_check_proxy_player import HistoryCheckProxyPlayer
 def make_player():
     return HistoryCheckProxyPlayer(OrderProxyPlayer(PrioritizeCapturePlayer()))
 
-class PrioritizeCapturePlayer():
+class PrioritizeCapturePlayer(object):
     def __init__(self):
         self.max_search_depth = 1
         self.name = None
@@ -17,7 +17,7 @@ class PrioritizeCapturePlayer():
 
 
     def register(self):
-        self.name = "prioritize capture player"
+        self.name = "prioritize capture player " + str(time.time())
         return self.name
 
 

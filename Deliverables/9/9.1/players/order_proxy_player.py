@@ -4,7 +4,7 @@ sys.path.append(os.path.abspath('..'))
 from constants import *
 
 
-class OrderProxyPlayer():
+class OrderProxyPlayer(object):
     def __init__(self, real_player):
         self.real_player = real_player
         self.registered = False

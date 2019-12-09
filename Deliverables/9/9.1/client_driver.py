@@ -4,9 +4,7 @@ from functools import partial
 from io import StringIO
 
 # Import local dependencies.
-from players.order_proxy_player import OrderProxyPlayer
 import players.random_sometimes_illegal_player as random_sometimes_illegal_player
-from players.human_player import HumanPlayer
 from constants import *
 import utils
 
