@@ -5,8 +5,8 @@ from collections import defaultdict
 # Import local dependencies.
 from constants import *
 import players.remote_proxy_player as remote_proxy_player
+from players.remote_proxy_player import make_player
 import referee
-
 
 # Config file.
 script_dir = os.path.dirname(__file__)
@@ -53,6 +53,9 @@ def main():
     
     # Play the tournament.
     if mode == CUP:
+        print("STARTING SINGLE-ELIMINATION TOURNAMENT WITH {} PLAYERS".format(num_remote_players + num_default_players))
+        print("NUMBER OF REMOTE PLAYERS: {}".format(num_remote_players))
+        print("NUMBER OF DEFAULT PLAYERS: {}\n".format(num_default_players))
         final_rankings = play_cup_tournament(players)
     elif mode == LEAGUE:
         final_rankings = play_league_tournament(players)
@@ -68,14 +71,17 @@ def play_cup_tournament(players):
     # Ask each player to register.
     player_to_name = {}
     cheating_players = []
+    print("BEGIN REGISTER")
     for i, player in enumerate(players):
         try:
             name = player.register()
             player_to_name[player] = name
+            print("PLAYER {} SUCCESSFULLY REGISTERED".format(name))
         except RuntimeError:
+            print("{}TH PLAYER FAILED TO REGISTER. REPLACING WITH THE DEFAULT PLAYER...".format(i))
             replace_cheating_player(players, i, cheating_players, player_to_name)
 
-    final_rankings = play_cup_tournament_helper(players, rankings=[[]])
+    final_rankings = play_cup_tournament_helper(players, rankings=[[]], player_to_name=player_to_name)
     return pretty_format_rankings(final_rankings, player_to_name)
 
 
@@ -90,7 +96,7 @@ def pretty_format_rankings(rankings, player_to_name):
     return result
 
 
-def play_cup_tournament_helper(players, rankings):
+def play_cup_tournament_helper(players, rankings, player_to_name):
     #instead of rankings, call it rankings_accumulator
     """
     rankings:
@@ -111,17 +117,15 @@ def play_cup_tournament_helper(players, rankings):
     fair_losers = []
     for i in range(0, len(players), 2):
         player1, player2 = players[i], players[i+1]
+        print("PLAYER {} vs PLAYER {}".format(player_to_name[player1], player_to_name[player2]))
         game_result = referee.play_a_game(player1, player2)
-        if game_result.game_was_draw:
-            winner, loser = toss_coin(heads_player=player1, tails_player=player2)
-            winners.append(winner)
-            fair_losers.append(loser)
-        elif game_result.loser_was_cheating:
+        if game_result.loser_was_cheating:
             winners.append(game_result.winner)
             rankings[0].append(game_result.loser)
         else:
             winners.append(game_result.winner)
             fair_losers.append(game_result.loser)
+        print
     rankings.append(fair_losers)
     return play_cup_tournament_helper(winners, rankings)
     
@@ -156,7 +160,9 @@ def play_league_tournament(players):
         try:
             name = player.register()
             player_to_name[player] = name
+            print("PLAYER {} SUCCESSFULLY REGISTERED".format(name))
         except RuntimeError:
+            print("{}th player failed to register. Replacing with the default player...".format(i))
             replace_cheating_player(players, i, cheating_players, player_to_name)
 
     score_board = [[LOSE]*len(players) for _ in range(len(players))]

@@ -1,9 +1,15 @@
+import random
 from constants import *
 from point import Point
 from board import Board
 import rule_checker as rc
 from game_result import GameResult
 
+def toss_coin(heads_player, tails_player):
+    if random.randint(0, 1) == 0:
+        return heads_player, tails_player
+    else:
+        return tails_player, heads_player
 
 class ReceiveStonesBlack(object):
     def act(self, container):
@@ -79,7 +85,6 @@ class BlackIllegalMove(object):
             pass
         container.game_result = GameResult(winner=container.white_player,
                                         loser=container.black_player,
-                                        game_was_draw=False,
                                         loser_was_cheating=True)
 
 
@@ -95,7 +100,6 @@ class WhiteIllegalMove(object):
             pass
         container.game_result = GameResult(winner=container.black_player,
                                         loser=container.white_player,
-                                        game_was_draw=False,
                                         loser_was_cheating=True)
 
 
@@ -117,17 +121,15 @@ class LegalEnd(object):
         if scores["B"] > scores["W"]:
             container.game_result = GameResult(winner=container.black_player,
                                             loser=container.white_player,
-                                            game_was_draw=False,
                                             loser_was_cheating=False)
         elif scores["W"] > scores["B"]:
             container.game_result = GameResult(winner=container.white_player,
                                             loser=container.black_player,
-                                            game_was_draw=False,
                                             loser_was_cheating=False)
         else:
-            container.game_result = GameResult(winner=None,
-                                            loser=None,
-                                            game_was_draw=True,
+            winner, loser = toss_coin(container.white_player, container.black_player)
+            container.game_result = GameResult(winner=winner,
+                                            loser=loser,
                                             loser_was_cheating=False)
 
 

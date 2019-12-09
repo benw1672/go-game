@@ -1,4 +1,3 @@
-from constants import *
 from game_state import GameStateContainer, BlackIllegalMove, WhiteIllegalMove, LegalEnd
 
 
