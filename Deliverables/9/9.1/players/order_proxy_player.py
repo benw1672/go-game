@@ -2,15 +2,19 @@ import sys, os
 
 sys.path.append(os.path.abspath('..'))
 from constants import *
+from .player import Player
 
 
-class OrderProxyPlayer(object):
+class OrderProxyPlayer(Player):
     def __init__(self, real_player):
         self.real_player = real_player
         self.registered = False
         self.received_stone = False
         self.game_ended = False
 
+    @property
+    def name(self):
+        return self.real_player.name
 
     def register(self):
         if not self.registered:

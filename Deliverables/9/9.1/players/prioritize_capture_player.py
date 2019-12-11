@@ -5,11 +5,12 @@ import rule_checker as rc
 from constants import *
 from .order_proxy_player import OrderProxyPlayer
 from .history_check_proxy_player import HistoryCheckProxyPlayer
+from .player import Player
 
 def make_player():
     return HistoryCheckProxyPlayer(OrderProxyPlayer(PrioritizeCapturePlayer()))
 
-class PrioritizeCapturePlayer(object):
+class PrioritizeCapturePlayer(Player):
     def __init__(self):
         self.max_search_depth = 1
         self.name = None

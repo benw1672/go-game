@@ -5,11 +5,12 @@ from constants import *
 import rule_checker as rc
 from .order_proxy_player import OrderProxyPlayer
 from .history_check_proxy_player import HistoryCheckProxyPlayer
+from .player import Player
 
 def make_player():
     return HistoryCheckProxyPlayer(OrderProxyPlayer(SimplePlayer()))
 
-class SimplePlayer(object):
+class SimplePlayer(Player):
     def __init__(self):
         self.name = None
         self.stone = None

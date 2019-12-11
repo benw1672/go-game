@@ -2,12 +2,17 @@ import sys, os
 
 sys.path.append(os.path.abspath('..'))
 import rule_checker as rc
+from .player import Player
 
 
-class HistoryCheckProxyPlayer(object):
+class HistoryCheckProxyPlayer(Player):
     def __init__(self, real_player):
         self.real_player = real_player
         self.stone = None
+
+    @property
+    def name(self):
+        return self.real_player.name
 
     def register(self):
         return self.real_player.register()

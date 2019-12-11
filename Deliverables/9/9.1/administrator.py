@@ -33,7 +33,7 @@ def main():
 
     # socket.listen(num_parallel_conn) is the number of parallel connections you can handle
     # only allows up to 10
-    serversocket.listen(num_remote_players)
+    serversocket.listen()
     num_connections = 0
     clientsockets = []
     while num_connections < num_remote_players:
@@ -86,7 +86,7 @@ def play_cup_tournament(players):
             replace_cheating_player(players, i, cheating_players, player_to_name)
 
     print()
-    final_rankings = play_cup_tournament_helper(players, rankings=[[]], player_to_name=player_to_name, round=0)
+    final_rankings = play_cup_tournament_helper(players, rankings_accum=[[]], player_to_name=player_to_name)
     return pretty_format_rankings(final_rankings, player_to_name)
 
 
@@ -100,11 +100,19 @@ def pretty_format_rankings(rankings, player_to_name):
         rank += len(players)
     return result
 
+def print_game_result(game_result, player_to_name):
+    print("WINNER: {}".format(player_to_name[game_result.winner]))
+    print("LOSER: {}".format(player_to_name[game_result.loser]))
+    print("LOSER CHEATED: {}\n".format(game_result.loser_was_cheating))
 
-def play_cup_tournament_helper(players, rankings, player_to_name, round):
-    #instead of rankings, call it rankings_accumulator
+def print_round_info(players, rankings_accum, player_to_name):
+    print("ROUND {}".format(len(rankings_accum)))
+    print("PLAYERS: {}".format([player_to_name[player] for player in players]))
+    print()
+
+def play_cup_tournament_helper(players, rankings_accum, player_to_name):
     """
-    rankings:
+    rankings_accum:
     16 players
     [
         [cheating_players]
@@ -115,39 +123,33 @@ def play_cup_tournament_helper(players, rankings, player_to_name, round):
         [p16] <- 1st place (winner)
     ]
     """
-    print("ROUND {}".format(round))
-    print("PLAYERS: {}".format([player_to_name[player] for player in players]))
-    print()
+    print_round_info(players, rankings_accum, player_to_name)
+
     if len(players) == 1:
-        rankings.append(players)
-        return rankings
+        rankings_accum.append(players)
+        return rankings_accum
     winners = []
     fair_losers = []
     for i in range(0, len(players), 2):
         player1, player2 = players[i], players[i+1]
+
         print("################GAME STARTED################")
         print("{} VS {}\n".format(player_to_name[player1], player_to_name[player2]))
+
         game_result = referee.play_a_game(player1, player2)
+
         print("################GAME ENDED################")
-        print("WINNER: {}".format(player_to_name[game_result.winner]))
-        print("LOSER: {}".format(player_to_name[game_result.loser]))
-        print("LOSER CHEATED: {}\n".format(game_result.loser_was_cheating))
+        print_game_result(game_result, player_to_name)
+
         if game_result.loser_was_cheating:
             winners.append(game_result.winner)
-            rankings[0].append(game_result.loser)
+            rankings_accum[0].append(game_result.loser)
         else:
             winners.append(game_result.winner)
             fair_losers.append(game_result.loser)
-    rankings.append(fair_losers)
-    return play_cup_tournament_helper(winners, rankings, player_to_name, round + 1)
+    rankings_accum.append(fair_losers)
+    return play_cup_tournament_helper(winners, rankings_accum, player_to_name)
     
-
-def toss_coin(heads_player, tails_player):
-    if random.randint(0, 1) == 0:
-        return heads_player, tails_player
-    else:
-        return tails_player, heads_player
-
 
 def replace_cheating_player(players, cheating_player_index, cheating_players, player_to_name):
     print("\nREPLACING CHEATER WITH THE DEFAULT PLAYER...")
@@ -189,17 +191,20 @@ def play_league_tournament(players):
             replace_cheating_player(players, i, cheating_players, player_to_name)
     print()
 
+    cheating_players = []
     score_board = [[LOSE]*len(players) for _ in range(len(players))]
 
     for i in range(len(players)-1):
         for j in range(i+1, len(players)):
+
             print("################GAME STARTED################")
             print("{} VS {}\n".format(player_to_name[players[i]], player_to_name[players[j]]))
+
             game_result = referee.play_a_game(players[i], players[j])
+
             print("################GAME ENDED################")
-            print("WINNER: {}".format(player_to_name[game_result.winner]))
-            print("LOSER: {}".format(player_to_name[game_result.loser]))
-            print("LOSER CHEATED: {}".format(game_result.loser_was_cheating))
+            print_game_result(game_result, player_to_name)
+
             if game_result.loser_was_cheating:
                 if game_result.loser == players[i]:
                     winner_index = j

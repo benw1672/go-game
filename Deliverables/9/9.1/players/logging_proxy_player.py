@@ -1,9 +1,16 @@
-class LoggingProxyPlayer(object):
+from .player import Player
+
+class LoggingProxyPlayer(Player):
     def __init__(self, real_player, logging=True):
         self.real_player = real_player
         self.logging = logging
         self.stone = None
-        self.name = None
+
+
+    @property
+    def name(self):
+        return self.real_player.name
+
 
     def __str__(self):
         return "PLAYER: {}\nSTONE: {}".format(self.name, self.stone)
@@ -12,11 +19,11 @@ class LoggingProxyPlayer(object):
     def register(self):
         if self.logging:
             print("REGISTER")
-            self.name = self.real_player.register()
-            print("REGISTERED WITH NAME: {}".format(self.name))
+            name = self.real_player.register()
+            print("REGISTERED WITH NAME: {}".format(name))
+            return name
         else:
-            self.name = self.real_player.register()
-        return self.name
+            return self.real_player.register()
 
 
     def receive_stones(self, stone):
