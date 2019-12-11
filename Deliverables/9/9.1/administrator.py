@@ -83,10 +83,10 @@ def play_cup_tournament(players):
             print("PLAYER {} SUCCESSFULLY REGISTERED\n".format(name))
         except RuntimeError:
             print("{}TH PLAYER FAILED TO REGISTER. REPLACING WITH THE DEFAULT PLAYER...".format(i))
-            replace_cheating_player(players, i, cheating_players, player_to_name)
+            replace_cheating_player(players, i, [], player_to_name)
 
     print()
-    final_rankings = play_cup_tournament_helper(players, rankings_accum=[[]], player_to_name=player_to_name)
+    final_rankings = play_cup_tournament_helper(players, rankings_accum=[cheating_players], player_to_name=player_to_name)
     return pretty_format_rankings(final_rankings, player_to_name)
 
 
@@ -188,10 +188,9 @@ def play_league_tournament(players):
             print("PLAYER {} SUCCESSFULLY REGISTERED\n".format(name))
         except RuntimeError:
             print("{}TH PLAYER FAILED TO REGISTER. REPLACING WITH THE DEFAULT PLAYER...".format(i))
-            replace_cheating_player(players, i, cheating_players, player_to_name)
+            replace_cheating_player(players, i, [], player_to_name)
     print()
 
-    cheating_players = []
     score_board = [[LOSE]*len(players) for _ in range(len(players))]
 
     for i in range(len(players)-1):

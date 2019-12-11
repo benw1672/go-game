@@ -14,8 +14,8 @@ import utils
 def main():
     script_dir = os.path.dirname(__file__)
     # Set up the player.
-    player = random_sometimes_illegal_player.make_player()
-    # player = human_player.make_player()
+    #player = random_sometimes_illegal_player.make_player()
+    player = human_player.make_player()
 
     # Connect to server.
     with open(os.path.join(script_dir, 'go.config')) as f:

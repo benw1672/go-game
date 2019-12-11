@@ -20,10 +20,10 @@ def jsonify(internal_object):
     return jsonpickle.encode(internal_object, unpicklable=False)
 
 
-def jsoncommand2internal(python_repr):
-    if not python_repr or not isinstance(python_repr, list):
+def jsoncommand2internal(json_element):
+    if not json_element or not isinstance(json_element, list):
         raise ValueError("JSON command string is not valid.")
-    command_name, *args = python_repr
+    command_name, *args = json_element
     if command_name == "make-a-move":
         try:
             assert len(args) == 1
