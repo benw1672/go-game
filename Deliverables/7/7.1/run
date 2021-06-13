@@ -1,5 +1,0 @@
-#!/bin/bash
-
-# This is the file "run": it runs the actual submission
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-python3 $DIR/client_test_driver.py & python3 $DIR/server_test_driver.py
