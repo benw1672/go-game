@@ -1,8 +1,8 @@
 import unittest, sys, os
 
-from players.simple_player import SimplePlayer
-from players.order_proxy_player import OrderProxyPlayer
-from players.history_check_proxy_player import HistoryCheckProxyPlayer
+from shared.players.simple_player import SimplePlayer
+from shared.players.order_proxy_player import OrderProxyPlayer
+from shared.players.history_check_proxy_player import HistoryCheckProxyPlayer
 
 class PlayerUnitTests(unittest.TestCase):
     def test_player_eq(self):

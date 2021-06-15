@@ -1,6 +1,5 @@
 import unittest, sys, os
 
-sys.path.append(os.path.abspath('..'))
 from shared.board import Board
 from shared.point import Point
 from shared.constants import *

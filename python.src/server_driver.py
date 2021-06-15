@@ -17,9 +17,8 @@ IP = config["IP"]
 PORT = config["port"]
 
 # Load default player.
-default_player_file_loc = os.path.join(script_dir, 'shared/players/prioritize_capture_player.py')
+default_player_file_loc = os.path.join(script_dir, config["default-player"])
 spec = util.spec_from_file_location('shared.players.default_player', default_player_file_loc)
-# spec = util.spec_from_file_location('shared.players.default_player', config["default-player"])
 DEFAULT_PLAYER_MODULE = util.module_from_spec(spec)
 spec.loader.exec_module(DEFAULT_PLAYER_MODULE)
 
