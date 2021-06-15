@@ -1,8 +1,7 @@
 import sys, os
 
-sys.path.append(os.path.abspath('..'))
-import rule_checker as rc
-from .player import Player
+import shared.rule_checker as rc
+from shared.players.player import Player
 
 
 class HistoryCheckProxyPlayer(Player):

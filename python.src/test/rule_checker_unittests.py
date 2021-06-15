@@ -1,9 +1,9 @@
 import unittest, sys, os
-sys.path.append(os.path.abspath('..'))
-import rule_checker as rc
-from board import Board
-from point import Point
-from constants import *
+
+import shared.rule_checker as rc
+from shared.board import Board
+from shared.point import Point
+from shared.constants import *
 
 
 class RuleCheckerUnitTests(unittest.TestCase):

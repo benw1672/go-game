@@ -2,14 +2,12 @@
 import json, sys, os, time
 
 # Local imports.
-sys.path.append(os.path.abspath('..'))
-import utils
-from point import Point
-from constants import *
-from .order_proxy_player import OrderProxyPlayer
-from .history_check_proxy_player import HistoryCheckProxyPlayer
-from .logging_proxy_player import LoggingProxyPlayer
-from .player import Player
+from shared.point import Point
+from shared.constants import *
+from shared.players.order_proxy_player import OrderProxyPlayer
+from shared.players.logging_proxy_player import LoggingProxyPlayer
+from shared.players.player import Player
+import shared.utils as utils
 
 def make_player(connection):
     return LoggingProxyPlayer(OrderProxyPlayer(RemoteProxyPlayer(connection)))

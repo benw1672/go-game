@@ -1,9 +1,9 @@
 # Import nonlocal dependencies.
 import operator
+from functools import total_ordering
 
 # Import local dependencies.
-from constants import *
-from functools import total_ordering
+from shared.constants import *
 
 
 def is_row_index_in_bounds(x: int):

@@ -1,9 +1,9 @@
 import random
-from constants import *
-from point import Point
-from board import Board
-import rule_checker as rc
-from game_result import GameResult
+from shared.constants import *
+from shared.point import Point
+from shared.board import Board
+import shared.rule_checker as rc
+from server.game_result import GameResult
 
 def toss_coin(heads_player, tails_player):
     if random.randint(0, 1) == 0:

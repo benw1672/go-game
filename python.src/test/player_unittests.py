@@ -1,5 +1,5 @@
 import unittest, sys, os
-sys.path.append(os.path.abspath('..'))
+
 from players.simple_player import SimplePlayer
 from players.order_proxy_player import OrderProxyPlayer
 from players.history_check_proxy_player import HistoryCheckProxyPlayer

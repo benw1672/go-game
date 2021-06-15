@@ -3,9 +3,9 @@ import typing
 from queue import Queue
 
 # Import local dependencies.
-from constants import *
-from point import Point
-from chain import Chain
+from shared.constants import *
+from shared.point import Point
+from shared.chain import Chain
 
 
 def enforce_board_contract(json_board):

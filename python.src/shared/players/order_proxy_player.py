@@ -1,8 +1,8 @@
 import sys, os
 
-sys.path.append(os.path.abspath('..'))
-from constants import *
-from .player import Player
+
+from shared.constants import *
+from shared.players.player import Player
 
 
 class OrderProxyPlayer(Player):

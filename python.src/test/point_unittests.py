@@ -1,7 +1,7 @@
 import unittest, sys, os
-sys.path.append(os.path.abspath('..'))
-from point import Point
-from constants import *
+
+from shared.point import Point
+from shared.constants import *
 
 class PointUnitTests(unittest.TestCase):
     def test_point_eq(self):

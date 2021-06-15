@@ -14,7 +14,6 @@ Sample console printouts:
 **Client console printout**
 ![Client console printout](docs/client_console_printout.png)
 
-
 Next steps:
 - The currently available computer players are not very competitive, and make moves using simple hueristics.
 I hope to add smarter hueristics and a deep-learning based player.
@@ -30,15 +29,17 @@ Required: install python3 and pip3 (the Python3 version of the pip package manag
 `pip3 install -r requirements.txt`
 
 ### Starting the game server
+All of the python source code is under the directory `python.src/`
+
 ```
-usage: python3 administrator.py --cup num_players
-       python3 administrator.py --league num_players
+usage: python3 server_driver.py --cup num_players
+       python3 server_driver.py --league num_players
 ```
 The `--cup` flag tells the server to start a single-elimination tournament with `num_players` players.
 The `--league` flag tells the server to start a round-robin tournament with `num_players` players.
 
 Example:
-`python3 administrator.py --cup 2`
+`python3 server_driver.py --cup 2`
 
 ### Starting a client
 ```
@@ -59,7 +60,7 @@ placing a stone on the 3rd column, 2nd row of the board. A player can also pass 
 
 
 ### Configuring the clients and server
-Clients and server read the follow params from `go.config`:
+Clients and server read the follow params from config files (`client/client.config` and `server/server.config`):
 - `IP`: IP address for the server to listen at (or the client to connect to).
 - `port`: Port number for the server to listen at (or the client to connect to).
 - `default-player`: Path to a file that implements the Player interface. This will be used as the computer player if the server has to pad a tournament bracket with additional players.

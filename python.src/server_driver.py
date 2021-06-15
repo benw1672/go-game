@@ -1,22 +1,25 @@
 # Import nonlocal dependencies.
-import sys, socket, math, random
+import os, sys, socket, math, random
 from collections import defaultdict
+from importlib import util
 
 # Import local dependencies.
-from constants import *
-import players.remote_proxy_player as remote_proxy_player
-from players.remote_proxy_player import make_player
-import referee
+from shared.constants import *
+import shared.players.remote_proxy_player as remote_proxy_player
+from shared.players.remote_proxy_player import make_player
+import server.referee as referee
 
 # Config file.
 script_dir = os.path.dirname(__file__)
-with open(os.path.join(script_dir, 'go.config')) as fd:
+with open(os.path.join(script_dir, 'server/server.config')) as fd:
     config = json.load(fd)
 IP = config["IP"]
 PORT = config["port"]
 
 # Load default player.
-spec = util.spec_from_file_location('players.default_player', config["default-player"])
+default_player_file_loc = os.path.join(script_dir, 'shared/players/prioritize_capture_player.py')
+spec = util.spec_from_file_location('shared.players.default_player', default_player_file_loc)
+# spec = util.spec_from_file_location('shared.players.default_player', config["default-player"])
 DEFAULT_PLAYER_MODULE = util.module_from_spec(spec)
 spec.loader.exec_module(DEFAULT_PLAYER_MODULE)
 

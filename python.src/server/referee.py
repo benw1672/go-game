@@ -1,4 +1,4 @@
-from game_state import GameStateContainer, BlackIllegalMove, WhiteIllegalMove, LegalEnd
+from server.game_state import GameStateContainer, BlackIllegalMove, WhiteIllegalMove, LegalEnd
 
 
 def play_a_game(black_player, white_player):

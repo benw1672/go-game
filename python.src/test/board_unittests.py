@@ -1,8 +1,9 @@
 import unittest, sys, os
+
 sys.path.append(os.path.abspath('..'))
-from board import Board
-from point import Point
-from constants import *
+from shared.board import Board
+from shared.point import Point
+from shared.constants import *
 
 class BoardUnitTests(unittest.TestCase):
     def test_board_eq(self):

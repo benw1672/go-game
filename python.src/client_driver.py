@@ -4,11 +4,12 @@ from functools import partial
 from io import StringIO
 
 # Import local dependencies.
-import players.random_sometimes_illegal_player as random_sometimes_illegal_player
-import players.human_player as human_player
+import shared.players.random_sometimes_illegal_player as random_sometimes_illegal_player
+import shared.players.human_player as human_player
 
-from constants import *
-import utils
+# from shared.constants import *
+from shared.constants import *
+import shared.utils as utils
 
 
 def main():
@@ -18,7 +19,7 @@ def main():
     player = human_player.make_player()
 
     # Connect to server.
-    with open(os.path.join(script_dir, 'go.config')) as f:
+    with open(os.path.join(script_dir, 'client/client.config')) as f:
         network_config = json.load(f)
     clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     clientsocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -62,7 +63,7 @@ def command_player(player, json_element):
 def stream_to_json_gen(stream):
     decoder = json.JSONDecoder()
     buffer = ''
-    buffersize=10
+    buffersize = 10
     for chunk in iter(partial(stream.read, buffersize), ''):
          buffer += chunk
          while buffer:

@@ -1,11 +1,11 @@
 import sys, os, time
-sys.path.append(os.path.abspath('..'))
-import utils
-import rule_checker as rc
-from constants import *
-from .order_proxy_player import OrderProxyPlayer
-from .history_check_proxy_player import HistoryCheckProxyPlayer
-from .player import Player
+
+import shared.rule_checker as rc
+from shared.constants import *
+from shared.players.order_proxy_player import OrderProxyPlayer
+from shared.players.history_check_proxy_player import HistoryCheckProxyPlayer
+from shared.players.player import Player
+import shared.utils as utils
 
 def make_player():
     return HistoryCheckProxyPlayer(OrderProxyPlayer(PrioritizeCapturePlayer()))

@@ -1,11 +1,9 @@
 import sys, os
 
-sys.path.append(os.path.abspath('..'))
-import utils
-from .order_proxy_player import OrderProxyPlayer
-from .history_check_proxy_player import HistoryCheckProxyPlayer
-from .logging_proxy_player import LoggingProxyPlayer
-from .player import Player
+from shared.players.order_proxy_player import OrderProxyPlayer
+from shared.players.history_check_proxy_player import HistoryCheckProxyPlayer
+from shared.players.logging_proxy_player import LoggingProxyPlayer
+from shared.players.player import Player
 
 def make_player():
     return LoggingProxyPlayer(HistoryCheckProxyPlayer(OrderProxyPlayer(HumanPlayer())))
