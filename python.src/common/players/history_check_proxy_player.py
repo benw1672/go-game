@@ -1,7 +1,7 @@
 import sys, os
 
-import shared.rule_checker as rc
-from shared.players.player import Player
+import common.rule_checker as rc
+from common.players.player import Player
 
 
 class HistoryCheckProxyPlayer(Player):

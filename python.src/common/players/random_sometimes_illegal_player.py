@@ -1,11 +1,11 @@
 import sys, os, random, time
 
-from shared.players.order_proxy_player import OrderProxyPlayer
-from shared.players.history_check_proxy_player import HistoryCheckProxyPlayer
-from shared.players.logging_proxy_player import LoggingProxyPlayer
-from shared.players.player import Player
-from shared.point import Point
-from shared.constants import *
+from common.players.order_proxy_player import OrderProxyPlayer
+from common.players.history_check_proxy_player import HistoryCheckProxyPlayer
+from common.players.logging_proxy_player import LoggingProxyPlayer
+from common.players.player import Player
+from common.point import Point
+from common.constants import *
 
 def make_player():
     return LoggingProxyPlayer(HistoryCheckProxyPlayer(OrderProxyPlayer(RandomSometimesIllegalPlayer())))

@@ -4,12 +4,12 @@ from functools import partial
 from io import StringIO
 
 # Import local dependencies.
-import shared.players.random_sometimes_illegal_player as random_sometimes_illegal_player
-import shared.players.human_player as human_player
+import common.players.random_sometimes_illegal_player as random_sometimes_illegal_player
+import common.players.human_player as human_player
 
-# from shared.constants import *
-from shared.constants import *
-import shared.utils as utils
+# from common.constants import *
+from common.constants import *
+import common.utils as utils
 
 
 def main():

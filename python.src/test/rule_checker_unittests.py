@@ -1,9 +1,9 @@
 import unittest, sys, os
 
-import shared.rule_checker as rc
-from shared.board import Board
-from shared.point import Point
-from shared.constants import *
+import common.rule_checker as rc
+from common.board import Board
+from common.point import Point
+from common.constants import *
 
 
 class RuleCheckerUnitTests(unittest.TestCase):

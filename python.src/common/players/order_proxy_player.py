@@ -1,8 +1,8 @@
 import sys, os
 
 
-from shared.constants import *
-from shared.players.player import Player
+from common.constants import *
+from common.players.player import Player
 
 
 class OrderProxyPlayer(Player):

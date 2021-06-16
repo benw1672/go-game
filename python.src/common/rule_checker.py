@@ -2,10 +2,10 @@
 import json, sys, os, typing, copy
 
 # Import local dependencies.
-from shared.point import Point
-from shared.board import Board
-from shared.constants import *
-import shared.utils as utils
+from common.point import Point
+from common.board import Board
+from common.constants import *
+import common.utils as utils
 
 
 def get_scores(board):

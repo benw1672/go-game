@@ -2,12 +2,12 @@
 import json, sys, os, time
 
 # Local imports.
-from shared.point import Point
-from shared.constants import *
-from shared.players.order_proxy_player import OrderProxyPlayer
-from shared.players.logging_proxy_player import LoggingProxyPlayer
-from shared.players.player import Player
-import shared.utils as utils
+from common.point import Point
+from common.constants import *
+from common.players.order_proxy_player import OrderProxyPlayer
+from common.players.logging_proxy_player import LoggingProxyPlayer
+from common.players.player import Player
+import common.utils as utils
 
 def make_player(connection):
     return LoggingProxyPlayer(OrderProxyPlayer(RemoteProxyPlayer(connection)))

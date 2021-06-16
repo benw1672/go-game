@@ -1,8 +1,8 @@
 import random
-from shared.constants import *
-from shared.point import Point
-from shared.board import Board
-import shared.rule_checker as rc
+from common.constants import *
+from common.point import Point
+from common.board import Board
+import common.rule_checker as rc
 from server.game_result import GameResult
 
 def toss_coin(heads_player, tails_player):

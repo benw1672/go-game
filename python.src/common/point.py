@@ -3,7 +3,7 @@ import operator
 from functools import total_ordering
 
 # Import local dependencies.
-from shared.constants import *
+from common.constants import *
 
 
 def is_row_index_in_bounds(x: int):

@@ -1,7 +1,7 @@
 import unittest, sys, os
 
-from shared.point import Point
-from shared.constants import *
+from common.point import Point
+from common.constants import *
 
 class PointUnitTests(unittest.TestCase):
     def test_point_eq(self):

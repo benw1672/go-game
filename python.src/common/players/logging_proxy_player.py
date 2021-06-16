@@ -1,4 +1,4 @@
-from shared.players.player import Player
+from common.players.player import Player
 
 class LoggingProxyPlayer(Player):
     def __init__(self, real_player, logging=True):

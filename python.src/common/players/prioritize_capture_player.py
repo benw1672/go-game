@@ -1,11 +1,11 @@
 import sys, os, time
 
-import shared.rule_checker as rc
-from shared.constants import *
-from shared.players.order_proxy_player import OrderProxyPlayer
-from shared.players.history_check_proxy_player import HistoryCheckProxyPlayer
-from shared.players.player import Player
-import shared.utils as utils
+import common.rule_checker as rc
+from common.constants import *
+from common.players.order_proxy_player import OrderProxyPlayer
+from common.players.history_check_proxy_player import HistoryCheckProxyPlayer
+from common.players.player import Player
+import common.utils as utils
 
 def make_player():
     return HistoryCheckProxyPlayer(OrderProxyPlayer(PrioritizeCapturePlayer()))

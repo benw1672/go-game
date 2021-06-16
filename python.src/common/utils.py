@@ -1,8 +1,8 @@
 import json, jsonpickle
 # Import local dependencies.
-from shared.constants import *
-from shared.point import Point
-from shared.board import Board
+from common.constants import *
+from common.point import Point
+from common.board import Board
 
 
 # General utility functions.

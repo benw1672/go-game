@@ -1,8 +1,8 @@
 import unittest, sys, os
 
-from shared.board import Board
-from shared.point import Point
-from shared.constants import *
+from common.board import Board
+from common.point import Point
+from common.constants import *
 
 class BoardUnitTests(unittest.TestCase):
     def test_board_eq(self):
